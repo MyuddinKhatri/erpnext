@@ -28,6 +28,10 @@
   "pick_list",
   "column_break_17",
   "po_date",
+  "delivery_window_section",
+  "delivery_start_time",
+  "column_break_24",
+  "delivery_end_time",
   "contact_info",
   "shipping_address_name",
   "shipping_address",
@@ -1235,13 +1239,35 @@
   {
    "fieldname": "section_break_18",
    "fieldtype": "Section Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "delivery_window_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery Window"
+  },
+  {
+   "fieldname": "delivery_start_time",
+   "fieldtype": "Time",
+   "label": "Delivery Start Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_end_time",
+   "fieldtype": "Time",
+   "label": "Delivery End Time",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-truck",
  "idx": 146,
  "is_submittable": 1,
  "links": [],
- "modified": "2019-12-30 19:17:13.122644",
+ "modified": "2020-03-24 01:10:32.171050",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Delivery Note",

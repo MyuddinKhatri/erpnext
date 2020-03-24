@@ -24,6 +24,10 @@
   "po_no",
   "po_date",
   "tax_id",
+  "delivery_window",
+  "delivery_start_time",
+  "column_break_19",
+  "delivery_end_time",
   "contact_info",
   "customer_address",
   "address_display",
@@ -1201,13 +1205,33 @@
    "hidden": 1,
    "label": "Is Completed",
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "delivery_window",
+   "fieldtype": "Section Break",
+   "label": "Delivery Window"
+  },
+  {
+   "fieldname": "delivery_start_time",
+   "fieldtype": "Time",
+   "label": "Delivery Start Time"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_end_time",
+   "fieldtype": "Time",
+   "label": "Delivery End time"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2019-12-30 19:15:28.605085",
+ "modified": "2020-03-23 21:56:12.871967",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",
