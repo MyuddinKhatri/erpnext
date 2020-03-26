@@ -253,29 +253,24 @@ class DeliveryTrip(Document):
 
 
 @frappe.whitelist()
-def get_delivery_window(customer=None):
-	delivery_window = frappe.db.get_value("Customer", customer, ["delivery_start_time", "delivery_end_time"], as_dict=1)
-	delivery_window.default_window = False
-
-	if delivery_window and (delivery_window.delivery_start_time or delivery_window.delivery_end_time):
-		return delivery_window
-
-	default_window = frappe.db.get_value("Delivery Settings", "Delivery Settings", ["delivery_start_time", "delivery_end_time"], as_dict=1)
-	if default_window.delivery_start_time and default_window.delivery_end_time:
-		print("Default WIndow",default_window)
-		default_window.default_window = True
-		return default_window
-	else:
-		frappe.throw(_("Default Delivery Window not available"))
-
-@frappe.whitelist()
-def get_delivery_window_from_delivery_note(delivery_note=None,customer=None):
-	if not delivery_note:
+def get_delivery_window(doctype=None, docname=None, customer=None):
+	if customer:
 		delivery_window = frappe.db.get_value("Customer", customer, ["delivery_start_time", "delivery_end_time"], as_dict=1)
+		delivery_window.default_window = False
+
+		if delivery_window and (delivery_window.delivery_start_time or delivery_window.delivery_end_time):
+			return delivery_window
+		
+		default_window = frappe.db.get_value("Delivery Settings", "Delivery Settings", ["delivery_start_time", "delivery_end_time"], as_dict=1)
+		if default_window.delivery_start_time and default_window.delivery_end_time:
+			default_window.default_window = True
+			return default_window
+		else:
+			frappe.throw(_("Default Delivery Window not available"))
+	elif doctype and docname:
+		delivery_window = frappe.db.get_value(doctype, docname , ["delivery_start_time", "delivery_end_time"], as_dict=1)
 		return delivery_window
-	else:
-		delivery_window = frappe.db.get_value("Delivery Note", delivery_note, ["delivery_start_time", "delivery_end_time"], as_dict=1)
-		return delivery_window
+	
 
 @frappe.whitelist()
 def get_contact_and_address(name):

@@ -1208,6 +1208,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "customer",
    "fieldname": "delivery_window",
    "fieldtype": "Section Break",
    "label": "Delivery Window"
@@ -1231,7 +1232,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-03-23 21:56:12.871967",
+ "modified": "2020-03-25 20:18:16.041200",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",

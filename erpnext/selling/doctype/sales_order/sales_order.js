@@ -41,8 +41,8 @@ frappe.ui.form.on("Sales Order", {
 			args: { customer: frm.doc.customer },
 			callback: function (r) {
 				if (r.message && (r.message.delivery_start_time || r.message.delivery_end_time)) {
-					frappe.model.set_value(frm.doc.doctype, frm.docname, "delivery_start_time", r.message.delivery_start_time);
-					frappe.model.set_value(frm.doc.doctype, frm.docname, "delivery_end_time", r.message.delivery_end_time);
+					frm.set_value("delivery_start_time", r.message.delivery_start_time);
+					frm.set_value("delivery_end_time", r.message.delivery_end_time);
 					frappe.show_alert({
 						indicator: 'blue',
 						message: __(r.message.default_window
