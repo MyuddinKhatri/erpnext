@@ -131,13 +131,25 @@ frappe.ui.form.on("BOM", {
 	},
 
 	make_work_order: function(frm) {
-		const fields = [{
-			fieldtype: 'Float',
-			label: __('Qty To Manufacture'),
-			fieldname: 'qty',
-			reqd: 1,
-			default: 1
-		}];
+		let fields = [];
+		if (frm.doc.manufacturing_type == "Process") {
+			fields = [{
+				fieldtype: 'Float',
+				label: __('Raw Material Qty'),
+				fieldname: 'qty',
+				reqd: 1,
+				default: 1
+			}];
+		}
+		else {
+			fields = [{
+				fieldtype: 'Float',
+				label: __('Qty To Manufacture'),
+				fieldname: 'qty',
+				reqd: 1,
+				default: 1
+			}];
+		}
 
 		frappe.prompt(fields, data => {
 			frappe.call({
@@ -145,8 +157,10 @@ frappe.ui.form.on("BOM", {
 				args: {
 					bom_no: frm.doc.name,
 					item: frm.doc.item,
+					manufacturing_type: frm.doc.manufacturing_type,
+					finished_good_qty: frm.doc.items[0].qty || 0,
 					qty: data.qty || 0.0,
-					project: frm.doc.project
+					project: frm.doc.project,
 				},
 				freeze: true,
 				callback: function(r) {
