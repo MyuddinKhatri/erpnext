@@ -624,7 +624,7 @@ def get_item_details(item, project = None):
 	return res
 
 @frappe.whitelist()
-def make_work_order(bom_no, item, manufacturing_type, finished_good_qty=0, qty=0, project=None):
+def make_work_order(bom_no, item, qty=0, project=None, manufacturing_type=None, finished_goods_qty=0):
 	if not frappe.has_permission("Work Order", "write"):
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
@@ -640,8 +640,8 @@ def make_work_order(bom_no, item, manufacturing_type, finished_good_qty=0, qty=0
 		if flt(qty) > 0:
 			wo_doc.qty = flt(qty)
 	elif manufacturing_type == "Process":
-		if flt(finished_good_qty) > 0 and flt(qty) > 0:
-			wo_doc.qty = int(qty)/int(finished_good_qty)
+		if flt(finished_goods_qty) > 0 and flt(qty) > 0:
+			wo_doc.qty = int(qty) / int(finished_goods_qty)
 
 	wo_doc.get_items_and_operations_from_bom()
 
