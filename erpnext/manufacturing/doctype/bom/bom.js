@@ -131,8 +131,7 @@ frappe.ui.form.on("BOM", {
 	},
 
 	make_work_order: function(frm) {
-		let fields = [];
-		fields = [{
+		const fields = [{
 			fieldtype: 'Float',
 			label: frm.doc.manufacturing_type == "Process" ? __('Raw Material Qty') : __('Qty To Manufacture'),
 			fieldname: 'qty',

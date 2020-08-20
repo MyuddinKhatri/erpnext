@@ -628,6 +628,9 @@ def make_work_order(bom_no, item, qty=0, project=None, manufacturing_type=None, 
 	if not frappe.has_permission("Work Order", "write"):
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
+	if not manufacturing_type:
+		manufacturing_type = "Discrete"
+	
 	item_details = get_item_details(item, project)
 
 	wo_doc = frappe.new_doc("Work Order")
