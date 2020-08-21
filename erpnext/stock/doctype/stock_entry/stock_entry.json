@@ -13,7 +13,6 @@
   "outgoing_stock_entry",
   "purpose",
   "company",
-  "manufacturing_type",
   "work_order",
   "purchase_order",
   "delivery_note_no",
@@ -28,6 +27,7 @@
   "from_bom",
   "sb1",
   "bom_no",
+  "manufacturing_type",
   "fg_completed_qty",
   "cb1",
   "use_multi_level_bom",
@@ -625,6 +625,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.from_bom",
    "fieldname": "manufacturing_type",
    "fieldtype": "Select",
    "label": "Manufacturing Type",
@@ -634,7 +635,7 @@
  "icon": "fa fa-file-text",
  "idx": 1,
  "is_submittable": 1,
- "modified": "2020-08-19 22:22:28.751083",
+ "modified": "2020-08-20 22:38:43.408633",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",
