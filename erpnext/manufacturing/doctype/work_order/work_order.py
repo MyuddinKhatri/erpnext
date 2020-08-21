@@ -48,6 +48,7 @@ class WorkOrder(Document):
 		self.set_default_warehouse()
 		self.validate_warehouse_belongs_to_company()
 		self.calculate_operating_cost()
+		self.validate_manufacturing_type()
 		self.validate_qty()
 		self.validate_operation_time()
 		self.status = self.get_status()
@@ -234,6 +235,11 @@ class WorkOrder(Document):
 			produced_qty = total_qty[0][0] if total_qty else 0
 
 		production_plan.run_method("update_produced_qty", produced_qty, self.production_plan_item)
+
+	def validate_manufacturing_type(self):
+		if self.manufacturing_type == "Process":
+			bom = frappe.get_doc("BOM", self.bom_no).as_dict()
+			self.qty = (bom.quantity / bom.get("items")[0].qty) * self.raw_material_qty
 
 	def on_submit(self):
 		if not self.wip_warehouse:
@@ -624,7 +630,7 @@ def get_item_details(item, project = None):
 	return res
 
 @frappe.whitelist()
-def make_work_order(bom_no, item, qty=0, project=None, manufacturing_type=None, finished_goods_qty=0):
+def make_work_order(bom_no, item, qty=0, project=None, finished_goods_qty=0, manufacturing_type=None, raw_material_qty=0):
 	if not frappe.has_permission("Work Order", "write"):
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
@@ -643,8 +649,9 @@ def make_work_order(bom_no, item, qty=0, project=None, manufacturing_type=None, 
 		if flt(qty) > 0:
 			wo_doc.qty = flt(qty)
 	elif manufacturing_type == "Process":
-		if flt(finished_goods_qty) > 0 and flt(qty) > 0:
-			wo_doc.qty = int(qty) / int(finished_goods_qty)
+		if flt(raw_material_qty) > 0 and flt(qty) > 0:
+			wo_doc.raw_material_qty = qty
+			wo_doc.qty = (int(finished_goods_qty) / int(raw_material_qty)) * int(qty)
 
 	wo_doc.get_items_and_operations_from_bom()
 

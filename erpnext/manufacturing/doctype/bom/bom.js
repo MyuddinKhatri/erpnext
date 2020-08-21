@@ -147,8 +147,9 @@ frappe.ui.form.on("BOM", {
 					item: frm.doc.item,
 					qty: data.qty || 0.0,
 					project: frm.doc.project,
+					finished_goods_qty: frm.doc.quantity,
 					manufacturing_type: frm.doc.manufacturing_type,
-					finished_goods_qty: frm.doc.items[0].qty || 0,
+					raw_material_qty: frm.doc.items[0].qty || 0,
 				},
 				freeze: true,
 				callback: function(r) {
