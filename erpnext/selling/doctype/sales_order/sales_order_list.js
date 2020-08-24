@@ -1,6 +1,6 @@
 frappe.listview_settings['Sales Order'] = {
 	add_fields: ["base_grand_total", "customer_name", "currency", "delivery_date",
-		"per_delivered", "per_billed", "status", "order_type", "name", "skip_delivery_note"],
+		"per_delivered", "per_billed", "status", "order_type", "name", "skip_delivery_note", "per_picked"],
 	get_indicator: function (doc) {
 		if (doc.status === "Closed") {
 			// Closed
@@ -15,6 +15,12 @@ frappe.listview_settings['Sales Order'] = {
 			// not delivered & overdue
 				return [__("Overdue"), "red",
 					"per_delivered,<,100|delivery_date,<,Today|status,!=,Closed"];
+			} else if (doc.docstatus == 1 && doc.per_picked == 100 && doc.per_delivered < 100) {
+				return [__("To Pick"), "orange",
+					"per_picked,<,100|per_billed,=,100|status,!=,Closed"];
+			} else if (doc.docstatus == 1 && doc.per_picked < 100 && doc.per_delivered < 100) {
+				return [__("To Pick and Bill"), "orange",
+					"per_picked,<,100|per_billed,<,100|status,!=,Closed"];
 			} else if (flt(doc.grand_total) === 0) {
 				// not delivered (zero-amount order)
 				return [__("To Deliver"), "orange",
@@ -22,11 +28,11 @@ frappe.listview_settings['Sales Order'] = {
 			} else if (flt(doc.per_billed, 6) < 100) {
 				// not delivered & not billed
 				return [__("To Deliver and Bill"), "orange",
-					"per_delivered,<,100|per_billed,<,100|status,!=,Closed"];
+					"per_picked,=,100|per_delivered,<,100|per_billed,<,100|status,!=,Closed"];
 			} else {
 				// not billed
 				return [__("To Deliver"), "orange",
-					"per_delivered,<,100|per_billed,=,100|status,!=,Closed"];
+					"per_picked,=,100|per_delivered,<,100|per_billed,=,100|status,!=,Closed"];
 			}
 		} else if ((flt(doc.per_delivered, 6) === 100) && flt(doc.grand_total) !== 0
 			&& flt(doc.per_billed, 6) < 100) {

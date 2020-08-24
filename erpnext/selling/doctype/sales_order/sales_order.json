@@ -1,5 +1,4 @@
 {
- "actions": [],
  "allow_import": 1,
  "autoname": "naming_series:",
  "creation": "2013-06-18 12:39:59",
@@ -57,6 +56,7 @@
   "section_break_31",
   "column_break_33a",
   "total_qty",
+  "per_picked",
   "base_total",
   "base_net_total",
   "column_break_33",
@@ -141,7 +141,8 @@
   "to_date",
   "column_break_108",
   "auto_repeat",
-  "update_auto_repeat_reference"
+  "update_auto_repeat_reference",
+  "is_completed"
  ],
  "fields": [
   {
@@ -1021,7 +1022,7 @@
    "no_copy": 1,
    "oldfieldname": "status",
    "oldfieldtype": "Select",
-   "options": "\nDraft\nOn Hold\nTo Deliver and Bill\nTo Bill\nTo Deliver\nCompleted\nCancelled\nClosed",
+   "options": "\nDraft\nOn Hold\nTo Pick\nTo Pick and Bill\nTo Deliver and Bill\nTo Bill\nTo Deliver\nCompleted\nCancelled\nClosed",
    "print_hide": 1,
    "read_only": 1,
    "reqd": 1,
@@ -1225,13 +1226,17 @@
    "fieldname": "delivery_end_time",
    "fieldtype": "Time",
    "label": "Delivery End time"
+  },
+  {
+   "fieldname": "per_picked",
+   "fieldtype": "Percent",
+   "label": "% Picked"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
- "links": [],
- "modified": "2020-07-16 01:47:12.785055",
+ "modified": "2020-08-24 00:45:28.637828",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",
