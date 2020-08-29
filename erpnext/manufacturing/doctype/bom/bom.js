@@ -136,7 +136,7 @@ frappe.ui.form.on("BOM", {
 			label: frm.doc.manufacturing_type == "Process" ? __('Raw Material Qty') : __('Qty To Manufacture'),
 			fieldname: 'qty',
 			reqd: 1,
-			default: 1
+			default: frm.doc.manufacturing_type == "Process" ? frm.doc.items[0].qty : frm.doc.quantity
 		}];
 
 		frappe.prompt(fields, data => {

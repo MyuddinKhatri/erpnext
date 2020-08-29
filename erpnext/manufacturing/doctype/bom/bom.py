@@ -101,7 +101,7 @@ class BOM(WebsiteGenerator):
 	def validate_raw_materials_table(self):
 		if self.manufacturing_type == "Process":
 			if len(self.items) > 1:
-				frappe.throw(_("For Process Manufacturing, only one item is allowed as Raw material"))
+				frappe.throw(_("For Process Manufacturing, only one item is allowed as raw material"))
 
 	def get_routing(self):
 		if self.routing:

@@ -645,15 +645,14 @@ def make_work_order(bom_no, item, qty=0, project=None, finished_goods_qty=0, man
 	wo_doc.bom_no = bom_no
 	wo_doc.manufacturing_type = manufacturing_type
 
-	if manufacturing_type == "Discrete":
-		if flt(qty) > 0:
+	if flt(qty) > 0:
+		if manufacturing_type == "Discrete":
 			wo_doc.qty = flt(qty)
-	elif manufacturing_type == "Process":
-		if flt(raw_material_qty) > 0 and flt(qty) > 0:
-			wo_doc.raw_material_qty = qty
-			wo_doc.qty = (int(finished_goods_qty) / int(raw_material_qty)) * int(qty)
-
-	wo_doc.get_items_and_operations_from_bom()
+		elif manufacturing_type == "Process":
+			if flt(raw_material_qty) > 0:
+				wo_doc.raw_material_qty = qty
+				wo_doc.qty = (int(finished_goods_qty) / int(raw_material_qty)) * int(qty)
+		wo_doc.get_items_and_operations_from_bom()
 
 	return wo_doc
 
