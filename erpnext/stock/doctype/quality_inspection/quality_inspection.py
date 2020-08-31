@@ -1,18 +1,22 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 
-from __future__ import unicode_literals
 import frappe
+from erpnext.stock.doctype.batch.batch import update_batch_doc
+from erpnext.stock.doctype.quality_inspection_template.quality_inspection_template import get_template_details
+from frappe import _
+import json
 from frappe.model.document import Document
-from erpnext.stock.doctype.quality_inspection_template.quality_inspection_template \
-	import get_template_details
 from frappe.model.mapper import get_mapped_doc
+
 
 class QualityInspection(Document):
 	def validate(self):
 		if not self.readings and self.item_code:
 			self.get_item_specification_details()
-		
+
+		if self.reference_type in ["Purchase Invoice", "Purchase Receipt"] and self.reference_name:
+			self.get_purchase_item_details()
 
 	def get_item_specification_details(self):
 		if not self.quality_inspection_template:
@@ -52,6 +56,8 @@ class QualityInspection(Document):
 		self.update_qc_reference()
 		if self.batch_no:
 			self.set_batch_coa()
+		if self.thc or self.cbd:
+			update_batch_doc(self.batch_no, self.name, self.item_code)
 
 	def on_cancel(self):
 		self.update_qc_reference()
@@ -72,6 +78,15 @@ class QualityInspection(Document):
 	def set_batch_coa(self):
 		if self.certificate_of_analysis:
 			frappe.db.set_value("Batch", self.batch_no, "certificate_of_analysis", self.certificate_of_analysis)
+
+	def get_purchase_item_details(self):
+		doc = frappe.get_doc(self.reference_type, self.reference_name)
+		for item in doc.items:
+			if item.item_code == self.item_code:
+				self.set("manufacturer_name", doc.supplier)
+				self.set("uom", item.uom)
+				self.set("qty", item.qty)
+				self.set("manufacturer_website", frappe.db.get_value("Supplier", doc.supplier, "website"))
 
 def item_query(doctype, txt, searchfield, start, page_len, filters):
 	if filters.get("from"):
@@ -135,15 +150,26 @@ def make_quality_inspection(source_name, target_doc=None):
 
 	return doc
 
-@frappe.whitelist()
-def get_purchase_item_details(doctype, name, item_code):
-	doc = frappe.get_doc(doctype, name)
-	for item in doc.items:
-		if item.item_code == item_code:
-			data = {
-				"supplier": doc.supplier,
-				"uom": item.uom,
-				"qty": item.qty
-			}
-			return data
 
+@frappe.whitelist()
+def make_quality_inspections(items):
+	items = json.loads(items)
+	quality_inspections = []
+
+	for item in items:
+		qi = frappe.new_doc("Quality Inspection")
+		qi.update({
+			"inspection_type": item.get("inspection_type"),
+			"reference_type": item.get("reference_type"),
+			"reference_name": item.get("reference_name"),
+			"item_code": item.get("item_code"),
+			"sample_size": item.get("sample_size"),
+			"batch_no": item.get("batch_no"),
+			"inspected_by": frappe.session.user,
+			"inspection_by": "Internal",
+			"quality_inspection_template": frappe.db.get_value('BOM', item.get("item_code"), 'quality_inspection_template')
+		}).save()
+
+		quality_inspections.append(frappe.utils.get_link_to_form("Quality Inspection", qi.name))
+
+	return quality_inspections
