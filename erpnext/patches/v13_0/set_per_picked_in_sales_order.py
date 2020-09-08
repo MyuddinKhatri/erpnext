@@ -3,7 +3,9 @@ import frappe
 def execute():
 	frappe.reload_doc('selling', 'doctype', 'sales_order', force=True)
 	frappe.reload_doc('stock', 'doctype', 'pick_list_item', force=True)
-	sales_orders = frappe.get_all("Sales Order", filters={"docstatus": 1})
+	sales_orders = frappe.get_all("Sales Order",
+		filters={"docstatus": 1},
+		fields=["per_delivered", "per_billed"])
 
 	for order in sales_orders:
 		pick_list_items = frappe.get_all("Pick List Item",
@@ -16,3 +18,7 @@ def execute():
 		if picked_qty and ordered_qty:
 			per_picked = (picked_qty / ordered_qty) * 100
 			frappe.db.set_value("Sales Order", order.name, "per_picked", per_picked)
+			if per_picked < 100 and order.per_delivered < 100 and order.per_billed == 100:
+				frappe.db.set_value("Sales Order", order.name, "status", "To Pick")
+			elif per_picked < 100 and order.per_delivered < 100 and order.per_billed < 100:
+				frappe.db.set_value("Sales Order", order.name, "status", "To Pick and Bill")
