@@ -15,10 +15,10 @@ frappe.listview_settings['Sales Order'] = {
 			// not delivered & overdue
 				return [__("Overdue"), "red",
 					"per_delivered,<,100|delivery_date,<,Today|status,!=,Closed"];
-			} else if (doc.docstatus == 1 && doc.per_billed == 100 && doc.per_delivered < 100) {
+			} else if (doc.docstatus == 1 && doc.per_billed == 100 && doc.per_picked < 100) {
 				return [__("To Pick"), "orange",
 					"per_picked,<,100|per_billed,=,100|per_delivered,<,100|status,!=,Closed"];
-			} else if (doc.docstatus == 1 && doc.per_billed < 100 && doc.per_delivered < 100) {
+			} else if (doc.docstatus == 1 && doc.per_billed < 100 && doc.per_picked < 100) {
 				return [__("To Pick and Bill"), "orange",
 					"per_picked,<,100|per_billed,<,100|per_delivered,<,100|status,!=,Closed"];
 			} else if (flt(doc.grand_total) === 0) {
