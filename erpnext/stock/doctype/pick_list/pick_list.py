@@ -57,8 +57,9 @@ class PickList(Document):
 	def on_submit(self):
 		self.update_order_package_tag()
 		self.update_package_tag()
-		self.set_per_picked()
 
+	def on_update(self):
+		self.set_per_picked()
 
 	def on_cancel(self):
 		self.update_order_package_tag(reset=True)
