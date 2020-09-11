@@ -1230,13 +1230,14 @@
   {
    "fieldname": "per_picked",
    "fieldtype": "Percent",
-   "label": "% Picked"
+   "label": "% Picked",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
- "modified": "2020-08-24 00:45:28.637828",
+ "modified": "2020-09-11 05:59:12.664403",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",
