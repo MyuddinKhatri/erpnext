@@ -57,6 +57,8 @@ class PickList(Document):
 	def on_submit(self):
 		self.update_order_package_tag()
 		self.update_package_tag()
+		self.set_per_picked()
+
 
 	def on_cancel(self):
 		self.update_order_package_tag(reset=True)
@@ -182,6 +184,11 @@ class PickList(Document):
 					})
 					package_tag.save()
 
+	def set_per_picked(self):
+		picked_qty = sum(d.picked_qty for d in self.locations)
+		ordered_qty = sum(d.qty for d in self.locations)
+		per_picked = (picked_qty / ordered_qty) * 100
+		frappe.db.set_value("Sales Order", self.locations[0].sales_order, "per_picked", per_picked)
 
 def validate_item_locations(pick_list):
 	if not pick_list.locations:

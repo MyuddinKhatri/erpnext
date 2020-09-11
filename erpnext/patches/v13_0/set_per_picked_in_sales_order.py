@@ -15,7 +15,7 @@ def execute():
 		picked_qty = sum(d['picked_qty'] for d in pick_list_items)
 		ordered_qty = sum(d['total_qty'] for d in pick_list_items)
 
-		if picked_qty and ordered_qty:
+		if ordered_qty:
 			per_picked = (picked_qty / ordered_qty) * 100
 			frappe.db.set_value("Sales Order", order.name, "per_picked", per_picked)
 			if per_picked < 100 and order.per_delivered < 100 and order.per_billed == 100:
