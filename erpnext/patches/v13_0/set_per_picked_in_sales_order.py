@@ -19,6 +19,6 @@ def execute():
 			per_picked = (picked_qty / ordered_qty) * 100
 			frappe.db.set_value("Sales Order", order.name, "per_picked", per_picked)
 			if per_picked < 100 and order.per_delivered < 100 and order.per_billed == 100:
-				frappe.db.set_value("Sales Order", order.name, "status", "To Pick")
+				frappe.db.set_value("Sales Order", order.name, "status", "To Pick", update_modified=False)
 			elif per_picked < 100 and order.per_delivered < 100 and order.per_billed < 100:
-				frappe.db.set_value("Sales Order", order.name, "status", "To Pick and Bill")
+				frappe.db.set_value("Sales Order", order.name, "status", "To Pick and Bill", update_modified=False)
