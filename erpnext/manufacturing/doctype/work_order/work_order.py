@@ -238,8 +238,8 @@ class WorkOrder(Document):
 
 	def validate_manufacturing_type(self):
 		if self.manufacturing_type == "Process":
-			bom = frappe.get_doc("BOM", self.bom_no).as_dict()
-			self.qty = (bom.quantity / bom.get("items")[0].qty) * self.raw_material_qty
+			bom = frappe.get_doc("BOM", self.bom_no)
+			self.qty = (bom.quantity / bom.items[0].qty) * self.raw_material_qty
 
 	def on_submit(self):
 		if not self.wip_warehouse:
@@ -648,10 +648,9 @@ def make_work_order(bom_no, item, qty=0, project=None, finished_goods_qty=0, man
 	if flt(qty) > 0:
 		if manufacturing_type == "Discrete":
 			wo_doc.qty = flt(qty)
-		elif manufacturing_type == "Process":
-			if flt(raw_material_qty) > 0:
-				wo_doc.raw_material_qty = qty
-				wo_doc.qty = (int(finished_goods_qty) / int(raw_material_qty)) * int(qty)
+		elif manufacturing_type == "Process" and flt(raw_material_qty) > 0:
+			wo_doc.raw_material_qty = qty
+			wo_doc.qty = (int(finished_goods_qty) / int(raw_material_qty)) * int(qty)
 		wo_doc.get_items_and_operations_from_bom()
 
 	return wo_doc

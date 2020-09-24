@@ -433,9 +433,7 @@ frappe.ui.form.on("Work Order", {
 	},
 
 	manufacturing_type: function(frm) {
-		if(frm.doc.manufacturing_type == "Process"){
-			frm.toggle_reqd("raw_material_qty", true);
-		}
+		frm.toggle_reqd("raw_material_qty", frm.doc.manufacturing_type == "Process");
 	},
 
 	use_multi_level_bom: function(frm) {
