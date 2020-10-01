@@ -432,10 +432,6 @@ frappe.ui.form.on("Work Order", {
 		});
 	},
 
-	manufacturing_type: function(frm) {
-		frm.toggle_reqd("raw_material_qty", frm.doc.manufacturing_type == "Process");
-	},
-
 	use_multi_level_bom: function(frm) {
 		if(frm.doc.bom_no) {
 			frm.trigger("bom_no");
@@ -549,7 +545,12 @@ erpnext.work_order = {
 						erpnext.work_order.create_pick_list(frm);
 					});
 					var start_btn = frm.add_custom_button(__('Start'), function() {
-						erpnext.work_order.make_se(frm, 'Material Transfer for Manufacture');
+						// if(frm.doc.manufacturing_type === "Process"){
+							// erpnext.work_order.make_se(frm, 'Raw Material');
+						// }
+						// else{
+							erpnext.work_order.make_se(frm, 'Material Transfer for Manufacture');
+						// }
 					});
 					start_btn.addClass('btn-primary');
 				}
@@ -581,7 +582,12 @@ erpnext.work_order = {
 					}
 
 					var finish_btn = frm.add_custom_button(__('Finish'), function() {
-						erpnext.work_order.make_se(frm, 'Manufacture');
+						// if(frm.doc.manufacturing_type === "Process"){
+							// erpnext.work_order.make_se(frm, 'Raw Material Consumed');
+						// }
+						// else{
+							erpnext.work_order.make_se(frm, 'Manufacture');
+						// }
 					});
 
 					finish_btn.addClass('btn-primary');
@@ -589,7 +595,12 @@ erpnext.work_order = {
 			} else {
 				if (frm.doc.status != 'Stopped') {
 					var finish_btn = frm.add_custom_button(__('Finish'), function() {
-						erpnext.work_order.make_se(frm, 'Manufacture');
+						// if(frm.doc.manufacturing_type === "Process"){
+							// erpnext.work_order.make_se(frm, 'Raw Material Consumed');
+						// }
+						// else{
+							erpnext.work_order.make_se(frm, 'Manufacture');
+						// }
 					});
 					finish_btn.addClass('btn-primary');
 				}
@@ -645,11 +656,12 @@ erpnext.work_order = {
 	},
 
 	show_prompt_for_qty_input: function(frm, purpose) {
-		let max = this.get_max_transferable_qty(frm, purpose);
+		console.log("P", purpose)
+		let max = frm.doc.manufacturing_type == "Process" ? frm.doc.raw_material_qty : this.get_max_transferable_qty(frm, purpose);
 		return new Promise((resolve, reject) => {
 			frappe.prompt({
 				fieldtype: 'Float',
-				label: __('Qty for {0}', [purpose]),
+				label: frm.doc.manufacturing_type == "Process" ? __('Raw Material Qty') : __('Qty for {0}', [purpose]),
 				fieldname: 'qty',
 				description: __('Max: {0}', [max]),
 				default: max
