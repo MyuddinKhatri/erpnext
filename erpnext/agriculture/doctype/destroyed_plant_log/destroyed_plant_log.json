@@ -15,6 +15,7 @@
  ],
  "fields": [
   {
+   "allow_in_quick_entry": 1,
    "depends_on": "eval: doc.is_plant !=1",
    "fieldname": "plant_batch",
    "fieldtype": "Link",
@@ -51,12 +52,14 @@
    "reqd": 1
   },
   {
+   "allow_in_quick_entry": 1,
    "default": "0",
    "fieldname": "is_plant",
    "fieldtype": "Check",
    "label": "Is Plant"
   },
   {
+   "allow_in_quick_entry": 1,
    "depends_on": "eval:doc.is_plant == 1",
    "fieldname": "plant",
    "fieldtype": "Link",
@@ -65,7 +68,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-09-30 22:21:52.035833",
+ "modified": "2020-09-30 22:42:08.756716",
  "modified_by": "Administrator",
  "module": "Agriculture",
  "name": "Destroyed Plant Log",
