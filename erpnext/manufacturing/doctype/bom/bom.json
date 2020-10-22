@@ -503,14 +503,15 @@
    "fieldname": "manufacturing_type",
    "fieldtype": "Select",
    "label": "Manufacturing Type",
-   "options": "\nDiscrete\nProcess"
+   "options": "\nDiscrete\nProcess",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "image_field": "image",
  "is_submittable": 1,
- "modified": "2020-09-04 03:16:03.025152",
+ "modified": "2020-10-22 04:41:44.497497",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "BOM",
