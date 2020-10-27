@@ -4,6 +4,25 @@
 cur_frm.cscript.refresh = cur_frm.cscript.inspection_type;
 
 frappe.ui.form.on("Quality Inspection", {
+	setup: function (frm) {
+		frm.set_query("batch_no", function (doc) {
+			return {
+				filters: {
+					'item_code': doc.item_code
+				}
+			}
+		});
+
+		frm.set_query('package_tag', () => {
+			return {
+				filters: {
+					'item_code': frm.doc.item_code,
+					'batch_no': frm.doc.batch_no
+				}
+
+			};
+		});
+	},
 	item_code: function (frm) {
 		if (frm.doc.item_code) {
 			frappe.db.get_value('Item', { name: frm.doc.item_code }, ['has_batch_no', 'has_serial_no'], (r) => {
@@ -33,11 +52,11 @@ frappe.ui.form.on("Quality Inspection", {
 		}
 	},
 	check_compliance_item: function (frm) {
-		frappe.db.get_value("Compliance Item", { "item_code": frm.doc.item_code }, "item_code")
+		frappe.db.get_value("Item", { "item_code": frm.doc.item_code }, "is_compliance_item")
 			.then(item => {
-				frm.toggle_reqd('certificate_of_analysis', !!item.message);
-				frm.toggle_display('thc', !!item.message);
-				frm.toggle_display('cbd', !!item.message);
+				frm.toggle_reqd('certificate_of_analysis', item.message.is_compliance_item);
+				frm.toggle_display('thc', item.message.is_compliance_item);
+				frm.toggle_display('cbd', item.message.is_compliance_item);
 			})
 	},
 	inspection_by: function (frm) {
@@ -66,9 +85,16 @@ frappe.ui.form.on("Quality Inspection Reading", {
 		if (row.status === "Rejected") {
 			frappe.confirm(__("This will mark the Quality Inspection as 'Rejected'. Are you sure you want to proceed?"),
 				() => { frm.set_value("status", row.status); },
-				() => { frappe.reload_doc() }
+				() => { frappe.model.set_value(cdt, cdn, "status", "Accepted"); }
 			);
 		}
+		let status = "Accepted";
+		frm.doc.readings.forEach(reading => {
+			if (reading.status === "Rejected") {
+				status = "Rejected";
+			}
+		});
+		frm.set_value("status", status);
 	}
 })
 
@@ -105,14 +131,6 @@ cur_frm.fields_dict['item_serial_no'].get_query = function (doc, cdt, cdn) {
 	}
 	return { filters: filters };
 }
-
-cur_frm.set_query("batch_no", function (doc) {
-	return {
-		filters: {
-			"item": doc.item_code
-		}
-	}
-})
 
 cur_frm.add_fetch('item_code', 'item_name', 'item_name');
 cur_frm.add_fetch('item_code', 'description', 'description');

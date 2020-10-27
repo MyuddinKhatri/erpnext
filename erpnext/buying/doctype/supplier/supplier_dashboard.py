@@ -10,7 +10,9 @@ def get_data():
 		'fieldname': 'supplier',
 		'non_standard_fieldnames': {
 			'Payment Entry': 'party_name',
-			'Bank Account': 'party'
+			'Bank Account': 'party',
+			'Contract': 'party_name',
+			'Subscription': 'party'
 		},
 		'transactions': [
 			{
@@ -32,6 +34,14 @@ def get_data():
 			{
 				'label': _('Pricing'),
 				'items': ['Pricing Rule']
+			},
+			{
+				'label': _('Contracts'),
+				'items': ['Contract']
+			},
+			{
+				'label': _('Subscriptions'),
+				'items': ['Subscription']
 			}
 		]
 	}

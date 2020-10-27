@@ -22,6 +22,10 @@ from frappe.website.render import clear_cache
 from frappe.website.website_generator import WebsiteGenerator
 
 from six import iteritems
+from erpnext.utilities.utils import get_abbr
+from erpnext import get_default_company
+from erpnext.accounts.utils import get_company_default
+from frappe.utils import cstr
 
 
 class DuplicateReorderRows(frappe.ValidationError):
@@ -67,6 +71,9 @@ class Item(WebsiteGenerator):
 				from frappe.model.naming import set_name_by_naming_series
 				set_name_by_naming_series(self)
 				self.item_code = self.name
+
+		if frappe.db.get_single_value("Stock Settings", "autoname_item"):
+			self.item_code = custom_autoname(self)
 
 		self.item_code = strip(self.item_code)
 		self.name = self.item_code
@@ -138,7 +145,7 @@ class Item(WebsiteGenerator):
 		self.validate_name_with_item_group()
 		self.update_variants()
 		self.update_item_price()
-		self.update_template_item()
+		self.update_variants_website_display()
 
 	def validate_description(self):
 		'''Clean HTML description if set'''
@@ -489,6 +496,10 @@ class Item(WebsiteGenerator):
 		if self.disabled:
 			self.show_in_website = False
 
+	def update_variants_website_display(self):
+		if self.has_variants:
+			frappe.enqueue(toggle_variants_website_display, item_name=self.name, value=self.show_in_website if not self.disabled else False, timeout=600)
+
 	def update_template_tables(self):
 		template = frappe.get_doc("Item", self.variant_of)
 
@@ -711,23 +722,6 @@ class Item(WebsiteGenerator):
 				set description = %s
 				where item_code = %s and docstatus < 2
 			""", (self.description, self.name))
-
-	def update_template_item(self):
-		"""Set Show in Website for Template Item if True for its Variant"""
-		if self.variant_of:
-			if self.show_in_website:
-				self.show_variant_in_website = 1
-				self.show_in_website = 0
-
-			if self.show_variant_in_website:
-				# show template
-				template_item = frappe.get_doc("Item", self.variant_of)
-
-				if not template_item.show_in_website:
-					template_item.show_in_website = 1
-					template_item.flags.dont_update_variants = True
-					template_item.flags.ignore_permissions = True
-					template_item.save()
 
 	def validate_item_defaults(self):
 		companies = list(set([row.company for row in self.item_defaults]))
@@ -1135,6 +1129,48 @@ def update_variants(variants, template, publish_progress=True):
 		if publish_progress:
 				frappe.publish_progress(count*100/len(variants), title = _("Updating Variants..."))
 
+def toggle_variants_website_display(item_name, value):
+
+	for item in frappe.get_all("Item", filters={"variant_of": item_name}, fields=["item_code"]):
+		item_doc = frappe.get_doc("Item", item.get("item_code"))
+		item_doc.show_variant_in_website = value
+		item_doc.save()
+
 def on_doctype_update():
 	# since route is a Text column, it needs a length for indexing
 	frappe.db.add_index("Item", ["route(500)"])
+
+@frappe.whitelist()
+def make_purchase_order_item(source_name, target_doc=None):
+	item= frappe.get_doc("Item", source_name)
+	doc = frappe.new_doc("Purchase Order")
+	if item.item_defaults and item.item_defaults[0].default_supplier:
+		doc.supplier = item.item_defaults[0].default_supplier
+	return doc
+
+def custom_autoname(doc):
+	"""
+		Item Code = a + b + c + d + e, where
+			a = abbreviated Company; all caps.
+			b = abbreviated Brand; all caps.
+			c = abbreviated Item Group; all caps.
+			d = abbreviated Item Name; all caps.
+			e = variant ID number; has to be incremented.
+	"""
+	# Get abbreviations
+	company_abbr = get_company_default(get_default_company(), "abbr")
+	brand_abbr = get_abbr(doc.brand, max_length=len(company_abbr))
+	brand_abbr = brand_abbr if company_abbr != brand_abbr else None
+	item_group_abbr = get_abbr(doc.item_group)
+	item_name_abbr = get_abbr(doc.item_name, 3)
+
+	params = list(filter(None, [company_abbr, brand_abbr, item_group_abbr, item_name_abbr]))
+	item_code = "-".join(params)
+
+		# Get count
+	count = len(frappe.get_all("Item", filters={"name": ["like", "%{}%".format(item_code)]}))
+
+	if count > 0:
+		item_code = "-".join([item_code, cstr(count + 1)])
+
+	return item_code

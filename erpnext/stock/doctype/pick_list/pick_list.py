@@ -44,15 +44,25 @@ class PickList(Document):
 	def validate_delivery_date(self):
 		order_delivery_dates = [frappe.db.get_value("Sales Order Item", location.get("sales_order_item"), "delivery_date")
 			for location in self.locations if location.get("sales_order_item")]
-		self.delivery_date = min(order_delivery_dates)
+		if order_delivery_dates:
+			self.delivery_date = min(order_delivery_dates)
 
 	def validate_stock_qty(self):
+		"""User should not allowed to create pick list if sales order item qty exceed."""
 		for item in self.locations:
 			if item.get("sales_order_item"):
-				order_qty = frappe.db.get_value("Sales Order Item", item.get("sales_order_item"), "qty")
-				if item.qty > order_qty:
+				ordered_item_qty = frappe.db.get_value("Sales Order Item", item.get("sales_order_item"), "qty")
+				prev_picked_qty = frappe.get_all("Pick List Item", filters={"sales_order_item":item.get("sales_order_item"), "docstatus":1}, fields=['sum(qty) as prev_picked_qty'])
+
+				if prev_picked_qty:
+					prev_picked_qty = prev_picked_qty[0].prev_picked_qty
+					pick_list_qty = flt(ordered_item_qty) - flt(prev_picked_qty)
+					if pick_list_qty > 0 and item.qty > pick_list_qty:
+						frappe.throw(_("Row #{0}: Picked quantity ({1}) for {2} cannot exceed unused ordered qty ({3})").format(item.idx, frappe.bold(item.qty), frappe.bold(item.item_name), frappe.bold(pick_list_qty)))
+
+				if item.qty > ordered_item_qty:
 					frappe.throw(_("Row #{0}: {1}'s quantity ({2}) should be less than or equal to the ordered quantity ({3})").format(
-						item.idx, frappe.bold(item.item_name), frappe.bold(item.qty), frappe.bold(order_qty)))
+						item.idx, frappe.bold(item.item_name), frappe.bold(item.qty), frappe.bold(ordered_item_qty)))
 
 	def on_submit(self):
 		self.update_order_package_tag()
@@ -396,12 +406,16 @@ def create_delivery_note(source_name, target_doc=None):
 			else [location, item_table_mapper_without_so]
 
 		dn_item = map_child_doc(source_doc, delivery_note, table_mapper)
-
+		coa_batch = None
+		if location.source_package_tag:
+			coa_batch = frappe.db.get_value("Package Tag", location.source_package_tag, "coa_batch_no")
+			
 		if dn_item:
 			dn_item.warehouse = location.warehouse
 			dn_item.qty = location.picked_qty
 			dn_item.batch_no = location.batch_no
 			dn_item.serial_no = location.serial_no
+			dn_item.coa_batch = coa_batch
 
 			update_delivery_note_item(source_doc, dn_item, delivery_note)
 

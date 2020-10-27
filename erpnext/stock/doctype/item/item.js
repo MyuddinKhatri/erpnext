@@ -5,6 +5,14 @@ frappe.provide("erpnext.item");
 
 frappe.ui.form.on("Item", {
 	setup: function(frm) {
+		frm.make_methods = {
+			'Purchase Order': () => {
+				frappe.model.open_mapped_doc({
+					method: 'erpnext.stock.doctype.item.item.make_purchase_order_item',
+					frm: frm
+				})
+			}
+		}
 		frm.add_fetch('attribute', 'numeric_values', 'numeric_values');
 		frm.add_fetch('attribute', 'from_range', 'from_range');
 		frm.add_fetch('attribute', 'to_range', 'to_range');
@@ -121,23 +129,8 @@ frappe.ui.form.on("Item", {
 			frm.set_df_property(fieldname, 'read_only', stock_exists);
 		});
 
-		frm.toggle_reqd('customer', frm.doc.is_customer_provided_item ? 1:0);
-
-		if (frappe.boot.compliance_enabled && !frm.is_new()) {
-			frappe.db.get_value("Compliance Item", { "item_code": frm.doc.item_code }, "name", (r) => {
-				if (!r || !r.name) {
-					frm.add_custom_button(__("Create"), () => {
-						frm.make_new("Compliance Item");
-					}, __("Compliance"));
-				}
-
-				if (r && r.name) {
-					frm.add_custom_button(__("View / Update"), () => {
-						frappe.set_route("Form", "Compliance Item", r.name);
-					}, __("Compliance"));
-				}
-			})
-		}
+		frm.toggle_reqd('customer', frm.doc.is_customer_provided_item ? 1 : 0);
+		frm.toggle_reqd('item_code', true);
 	},
 
 	validate: function(frm){
@@ -149,7 +142,7 @@ frappe.ui.form.on("Item", {
 	},
 
 	is_customer_provided_item: function(frm) {
-		frm.toggle_reqd('customer', frm.doc.is_customer_provided_item ? 1:0);
+		frm.toggle_reqd('customer', frm.doc.is_customer_provided_item ? 1 : 0);
 	},
 
 	gst_hsn_code: function(frm) {
