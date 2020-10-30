@@ -28,11 +28,11 @@ frappe.listview_settings['Sales Order'] = {
 			} else if (flt(doc.per_billed, 6) < 100) {
 				// not delivered & not billed
 				return [__("To Deliver and Bill"), "orange",
-					"per_picked,=,100|per_delivered,<,100|per_billed,<,100|status,!=,Closed"];
+					"per_delivered,<,100|per_billed,<,100|status,!=,Closed"];
 			} else {
 				// not billed
 				return [__("To Deliver"), "orange",
-					"per_picked,=,100|per_delivered,<,100|per_billed,=,100|status,!=,Closed"];
+					"per_delivered,<,100|per_billed,=,100|status,!=,Closed"];
 			}
 		} else if ((flt(doc.per_delivered, 6) === 100) && flt(doc.grand_total) !== 0
 			&& flt(doc.per_billed, 6) < 100) {
