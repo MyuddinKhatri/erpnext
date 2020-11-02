@@ -40,7 +40,7 @@ frappe.ui.form.on('Package Tag', {
 								</div>
 							</div>`).appendTo(rows);
 						}
-					})
+					});
 					$(`<div class='col-sm-3 small' style='padding-top: 3px;'>Total</div>
 					<div class='col-sm-3 small text-right' style='padding-top: 3px;'>${total_qty}</div>
 					`).appendTo(rows);
@@ -49,20 +49,21 @@ frappe.ui.form.on('Package Tag', {
 					// and make stock reconciliation
 					rows.find('.btn-move').on('click', function() {
 						var $btn = $(this);
-						frappe.prompt([{
-							fieldname: 'qty',
-							label: __('Qty to Adjust'),
-							fieldtype: 'Float',
-							reqd: 1,
-							'default': $btn.attr('data-qty')
-						},
-						{
-							fieldname: 'adjustment_reason',
-							label: __('Adjustment Reason'),
-							fieldtype: 'Data',
-							reqd: 1
-						}
-					],
+						frappe.prompt([
+							{
+								fieldname: 'qty',
+								label: __('Qty to Adjust'),
+								fieldtype: 'Float',
+								reqd: 1,
+								'default': $btn.attr('data-qty')
+							},
+							{
+								fieldname: 'adjustment_reason',
+								label: __('Adjustment Reason'),
+								fieldtype: 'Data',
+								reqd: 1
+							}
+						],
 						(data) => {
 							frappe.call({
 								method: 'erpnext.compliance.doctype.package_tag.package_tag.make_stock_reconciliation',
@@ -76,7 +77,7 @@ frappe.ui.form.on('Package Tag', {
 								},
 								callback: (r) => {
 									frappe.show_alert(__('Stock Reconciliation {0} created',
-											['<a href="#Form/Stock Reconciliation/'+r.message.name+'">' + r.message.name+ '</a>']));
+										['<a href="#Form/Stock Reconciliation/'+r.message.name+'">' + r.message.name+ '</a>']));
 									frm.refresh();
 								},
 							});
