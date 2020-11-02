@@ -155,8 +155,10 @@ frappe.ui.form.on('Delivery Trip', {
 										frm.reload_doc();
 									}
 								})
-								for(let stops of frm.doc.delivery_stops){
-									frappe.db.set_value("Delivery Note", stops.delivery_note, "status", "In Transit")
+								for(let stop of frm.doc.delivery_stops){
+									if(stop.delivery_note){
+										frappe.db.set_value("Delivery Note", stop.delivery_note, "status", "In Transit")
+									}
 								}
 							},
 							__("Enter Odometer Value"));
