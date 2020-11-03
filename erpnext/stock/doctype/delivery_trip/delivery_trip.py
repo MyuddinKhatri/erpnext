@@ -87,7 +87,8 @@ class DeliveryTrip(Document):
 			elif any(visited_stops):
 				status = "In Transit"
 
-		self.status = status
+		if self.status != "In Transit" and self.status != "Completed":
+			self.status = status
 	def update_delivery_notes(self, delete=False):
 		"""
 		Update all connected Delivery Notes with Delivery Trip details
