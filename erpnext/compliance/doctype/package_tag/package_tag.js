@@ -85,7 +85,7 @@ frappe.ui.form.on('Package Tag', {
 						__('Adjust Package Tag'),
 						__('Adjust')
 						);
-					})
+					});
 
 					frm.dashboard.show();
 				}
