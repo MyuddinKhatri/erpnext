@@ -157,7 +157,7 @@ frappe.ui.form.on('Delivery Trip', {
 								})
 								for (let stop of frm.doc.delivery_stops) {
 									if (stop.delivery_note) {
-									frappe.db.set_value("Delivery Note", stop.delivery_note, "status", "In Transit");
+										frappe.db.set_value("Delivery Note", stop.delivery_note, "status", "In Transit");
 									}
 								}
 							},

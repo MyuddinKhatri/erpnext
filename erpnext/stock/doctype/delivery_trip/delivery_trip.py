@@ -80,15 +80,14 @@ class DeliveryTrip(Document):
 			2: "Cancelled"
 		}[self.docstatus]
 
-		if self.docstatus == 1:
+		if self.docstatus == 1 and self.odometer_start_time:
 			visited_stops = [stop.visited for stop in self.delivery_stops]
 			if all(visited_stops):
 				status = "Completed"
-			elif any(visited_stops):
+			else:
 				status = "In Transit"
 
-		if self.status != "In Transit" and self.status != "Completed":
-			self.status = status
+		self.status = status
 	def update_delivery_notes(self, delete=False):
 		"""
 		Update all connected Delivery Notes with Delivery Trip details
