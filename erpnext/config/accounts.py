@@ -346,6 +346,12 @@ def get_data():
 				},
 				{
 					"type": "report",
+					"name": "Cost Center Wise Financial Statements",
+					"doctype": "GL Entry",
+					"is_query_report": True
+				},
+				{
+					"type": "report",
 					"name": "Consolidated Financial Statement",
 					"doctype": "GL Entry",
 					"is_query_report": True
@@ -389,6 +395,24 @@ def get_data():
 					"name": "Exchange Rate Revaluation",
 					"description": _("Exchange Rate Revaluation master.")
 				},
+			]
+		},
+		{
+			"label": _("Loyalty Program"),
+			"icon": "fa fa-cog",
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Loyalty Program",
+					"label": _("Loyalty Program"),
+					"description": _("To make Customer based incentive schemes.")
+				},
+				{
+					"type": "doctype",
+					"name": "Loyalty Point Entry",
+					"label": _("Loyalty Point Entry"),
+					"description": _("To view logs of Loyalty Points assigned to a Customer.")
+				}
 			]
 		},
 		{
