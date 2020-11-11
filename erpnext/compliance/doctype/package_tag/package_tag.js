@@ -55,7 +55,7 @@ frappe.ui.form.on('Package Tag', {
 								label: __('Qty to Adjust'),
 								fieldtype: 'Float',
 								reqd: 1,
-								'default': $btn.attr('data-qty')
+								default: $btn.attr('data-qty')
 							},
 							{
 								fieldname: 'adjustment_reason',

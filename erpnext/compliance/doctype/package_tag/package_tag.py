@@ -39,12 +39,12 @@ def make_stock_reconciliation(item_code, batch_no, package_tag, qty, warehouse, 
 	stock_reco = frappe.new_doc("Stock Reconciliation")
 	stock_reco.purpose = "Stock Reconciliation"
 	stock_reco.append("items", {
-		"item_code": item_code,
-		"qty": qty,
-		"warehouse": warehouse,
-		"package_tag": package_tag,
-		"batch_no": batch_no,
-		"adjustment_reason": adjustment_reason
+			"item_code": item_code,
+			"qty": qty,
+			"warehouse": warehouse,
+			"package_tag": package_tag,
+			"batch_no": batch_no,
+			"adjustment_reason": adjustment_reason
 		})
 	stock_reco.submit()
 	frappe.db.commit()
