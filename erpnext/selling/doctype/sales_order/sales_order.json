@@ -14,7 +14,6 @@
   "customer",
   "customer_name",
   "order_type",
-  "ignore_pick_list",
   "skip_delivery_note",
   "column_break1",
   "amended_from",
@@ -1248,18 +1247,12 @@
    "fieldname": "signature",
    "fieldtype": "Signature",
    "label": "Signature"
-  },
-  {
-   "default": "0",
-   "fieldname": "ignore_pick_list",
-   "fieldtype": "Check",
-   "label": "Ignore Pick List"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
- "modified": "2020-10-30 05:03:01.824542",
+ "modified": "2020-11-16 05:08:00.693654",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",
