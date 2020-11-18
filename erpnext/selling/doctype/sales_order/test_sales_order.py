@@ -333,7 +333,7 @@ class TestSalesOrder(unittest.TestCase):
 		self.assertEqual(so.get("items")[-1].rate, 200)
 		self.assertEqual(so.get("items")[-1].qty, 7)
 		self.assertEqual(so.get("items")[-1].amount, 1400)
-		self.assertEqual(so.status, 'To Pick and Bill')
+		self.assertEqual(so.status, 'To Deliver and Bill')
 
 	def test_remove_item_in_update_child_qty_rate(self):
 		so = make_sales_order(**{
@@ -375,7 +375,7 @@ class TestSalesOrder(unittest.TestCase):
 
 		so.reload()
 		self.assertEqual(len(so.get("items")), 1)
-		self.assertEqual(so.status, 'To Pick and Bill')
+		self.assertEqual(so.status, 'To Deliver and Bill')
 
 
 	def test_update_child_qty_rate(self):
@@ -392,7 +392,7 @@ class TestSalesOrder(unittest.TestCase):
 		self.assertEqual(so.get("items")[0].rate, 200)
 		self.assertEqual(so.get("items")[0].qty, 7)
 		self.assertEqual(so.get("items")[0].amount, 1400)
-		self.assertEqual(so.status, 'To Pick and Bill')
+		self.assertEqual(so.status, 'To Deliver and Bill')
 
 		self.assertEqual(get_reserved_qty(), existing_reserved_qty + 3)
 
