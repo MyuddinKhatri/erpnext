@@ -20,7 +20,7 @@ frappe.ui.form.on('Package Tag', {
 						${ __("Stock Levels") }</a></h5>`);
 
 					// sort by qty
-					r.message.sort(function(a, b) { a.qty > b.qty ? 1 : -1 });
+					r.message.sort(function(a, b) { a.qty > b.qty ? 1 : -1; });
 
 					var rows = $('<div></div>').appendTo(section);
 
