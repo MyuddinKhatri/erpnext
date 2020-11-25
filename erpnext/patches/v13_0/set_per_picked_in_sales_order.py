@@ -1,6 +1,9 @@
 import frappe
 
 def execute():
+	"""
+	Set Percentage Picked(per_picked)in Sales Order on the basis of Pick List created and status.
+	"""
 	frappe.reload_doc('selling', 'doctype', 'sales_order', force=True)
 	frappe.reload_doc('stock', 'doctype', 'pick_list_item', force=True)
 	sales_orders = frappe.get_all("Sales Order",

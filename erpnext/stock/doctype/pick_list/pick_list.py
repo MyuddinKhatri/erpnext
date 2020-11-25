@@ -196,6 +196,9 @@ class PickList(Document):
 					package_tag.save()
 
 	def set_per_picked(self):
+		"""
+		Set Percentage Picked(per_picked)in Sales Order on the basis of Pick List created.
+		"""
 		all_orders = [d.sales_order for d in self.locations]
 		for order in unique(all_orders):
 			picked_qty = sum(d.picked_qty for d in self.locations if d.sales_order == order)
