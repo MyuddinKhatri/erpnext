@@ -13,7 +13,7 @@ frappe.ui.form.on('Package Tag', {
 			frappe.model.open_mapped_doc({
 				method: "erpnext.compliance.doctype.package_tag.package_tag.make_waste_disposal",
 				frm: frm,
-			})
+			});
 		}, __('Create'));
 	},
 
