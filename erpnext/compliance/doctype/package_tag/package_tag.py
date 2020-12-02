@@ -55,13 +55,11 @@ def make_stock_reconciliation(item_code, batch_no, package_tag, qty, warehouse, 
 def make_waste_disposal(source_name, target_doc=None):
 	"""
 	Create Waste Disposal from a Package tag
-
 	Args:
 		source_name: string -> name of Package tag through which Waste Disposal will be created
 	Return:
 		dictionary -> it contains the all the value assigned to the Waste Disposal.
 	"""
-
 	def set_missing_values(source, target):
 		target.append("items", {
 			"item_code": source.item_code,
