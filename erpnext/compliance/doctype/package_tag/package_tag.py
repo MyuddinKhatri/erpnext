@@ -54,6 +54,7 @@ def make_stock_reconciliation(item_code, batch_no, package_tag, qty, warehouse, 
 @frappe.whitelist()
 def make_waste_disposal(source_name, target_doc=None):
 	"""
+
 	Create Waste Disposal from a Package tag
 
 	Args:
