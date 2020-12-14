@@ -742,20 +742,20 @@ def get_sub_assembly_items(bom_no, bom_data):
 			get_sub_assembly_items(bom_item.get("bom_no"), bom_data)
 
 @frappe.whitelist()
-def update_per_received_and_status_in_pp(pr):
-	for item in pr.items:
+def update_per_received_and_status_in_production_plan(purchase_receipt):
+	for item in purchase_receipt.items:
 		if not item.production_plan:
 			return
 		frappe.db.set_value("Material Request Plan Item", item.material_request_plan_item, "received_qty", item.received_qty)
 		frappe.db.set_value("Material Request Plan Item", item.material_request_plan_item, "stock_qty", item.stock_qty)
-		pp = frappe.get_doc("Production Plan", item.production_plan)
-		for item in pp.mr_items:
+		production_plan = frappe.get_doc("Production Plan", item.production_plan)
+		for item in production_plan.mr_items:
 			if item.received_qty and item.requested_qty:
 					per_received = (item.received_qty / item.requested_qty) * 100
 					frappe.db.set_value("Material Request Plan Item", item.name, "per_received", per_received)
-					pp.reload()
-		all_received =[item.per_received for item in pp.mr_items]
+					production_plan.reload()
+		all_received =[item.per_received for item in production_plan.mr_items]
 		if all(all_received):
-			pp.db_set("status", "Material Received")
+			production_plan.db_set("status", "Material Received")
 		elif any(all_received):
-			pp.db_set("status", "Partially Received")
+			production_plan.db_set("status", "Partially Received")
