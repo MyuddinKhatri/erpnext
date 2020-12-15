@@ -751,9 +751,9 @@ def update_per_received_and_status_in_production_plan(purchase_receipt):
 		production_plan = frappe.get_doc("Production Plan", item.production_plan)
 		for item in production_plan.mr_items:
 			if item.received_qty and item.requested_qty:
-					per_received = (item.received_qty / item.requested_qty) * 100
-					frappe.db.set_value("Material Request Plan Item", item.name, "per_received", per_received)
-					production_plan.reload()
+				per_received = (item.received_qty / item.requested_qty) * 100
+				frappe.db.set_value("Material Request Plan Item", item.name, "per_received", per_received)
+				production_plan.reload()
 		all_received =[item.per_received for item in production_plan.mr_items]
 		if all(all_received):
 			production_plan.db_set("status", "Material Received")
