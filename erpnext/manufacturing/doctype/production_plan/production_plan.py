@@ -745,21 +745,33 @@ def get_sub_assembly_items(bom_no, bom_data):
 def update_per_received_and_status_in_production_plan(purchase_receipt):
 	"""
 	Set Percentage Received(per_received) in Material Request Plan on the basis of Purchase Receipt.
+	Update status of Production Plan from Material Request Status.
 	"""
 	for item in purchase_receipt.items:
 		if not item.production_plan:
 			return
+		production_plan = frappe.get_doc("Production Plan", item.production_plan)
 		frappe.db.set_value("Material Request Plan Item", item.material_request_plan_item, "received_qty", item.received_qty)
 		frappe.db.set_value("Material Request Plan Item", item.material_request_plan_item, "stock_qty", item.stock_qty)
-		production_plan = frappe.get_doc("Production Plan", item.production_plan)
-		for item in production_plan.mr_items:
-			if item.received_qty and item.requested_qty:
-				per_received = (item.received_qty / item.requested_qty) * 100
-				frappe.db.set_value("Material Request Plan Item", item.name, "per_received", per_received)
-				production_plan.reload()
-		all_received =[item.per_received for item in production_plan.mr_items]
+		production_plan.reload()
+		if purchase_receipt.docstatus == 2:
+			for item in production_plan.mr_items:
+				if item.received_qty and item.requested_qty:
+					frappe.db.set_value("Material Request Plan Item", item.name, "received_qty", "0")
+					frappe.db.set_value("Material Request Plan Item", item.name, "requested_qty", "0")
+					frappe.db.set_value("Material Request Plan Item", item.name, "stock_qty", "0")
+					frappe.db.set_value("Material Request Plan Item", item.name, "per_received", "0")
+					production_plan.reload()
+			production_plan.db_set("status", "Material Requested")
+		else:
+			for mr_item in production_plan.mr_items:
+				if mr_item.received_qty and mr_item.requested_qty:
+					per_received = (mr_item.received_qty / mr_item.requested_qty) * 100
+					frappe.db.set_value("Material Request Plan Item", mr_item.name, "per_received", per_received)
+					production_plan.reload()
 
-		if all(all_received):
-			production_plan.db_set("status", "Material Received")
-		elif any(all_received):
-			production_plan.db_set("status", "Partially Received")
+			all_received =[item.per_received for item in production_plan.mr_items]
+			if all(all_received):
+				production_plan.db_set("status", "Material Received")
+			elif any(all_received):
+				production_plan.db_set("status", "Partially Received")

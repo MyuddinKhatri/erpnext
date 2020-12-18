@@ -204,6 +204,7 @@ class PurchaseReceipt(BuyingController):
 		self.update_stock_ledger()
 		self.make_gl_entries_on_cancel()
 		self.delete_auto_created_batches()
+		update_per_received_and_status_in_production_plan(self)
 
 	def get_current_stock(self):
 		for d in self.get('supplied_items'):
