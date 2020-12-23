@@ -743,7 +743,13 @@ def get_sub_assembly_items(bom_no, bom_data):
 
 @frappe.whitelist()
 def update_per_received_and_status_in_production_plan(purchase_receipt):
-	"""Set Percentage Received(per_received) in Material Request Plan Item and update status of Production Plan from Material Request Status."""
+	"""
+	Set Percentage Received(per_received) in Material Request Plan Item and
+	update status of Production Plan from Material Request Status.
+
+	Args:
+		purchase_receipt (dict): Purchase Receipt items for which Production Plan is updated
+	"""
 	for pr_item in purchase_receipt.items:
 		if not pr_item.production_plan:
 			return
