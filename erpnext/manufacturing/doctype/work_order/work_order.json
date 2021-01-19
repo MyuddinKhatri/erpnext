@@ -500,6 +500,7 @@
   },
   {
    "default": "0",
+   "depends_on": "eval: doc.manufacturing_type==\"Process\"",
    "fieldname": "skip_raw_material_validation",
    "fieldtype": "Check",
    "label": "Skip Raw Material Validation"
@@ -509,7 +510,7 @@
  "idx": 1,
  "image_field": "image",
  "is_submittable": 1,
- "modified": "2021-01-19 06:00:08.078181",
+ "modified": "2021-01-19 06:08:55.294661",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Work Order",
