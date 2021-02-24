@@ -117,7 +117,7 @@ frappe.ui.form.on('Material Request', {
 			frm.doc.items.forEach(d => {
 				frappe.model.set_value(d.doctype, d.name,
 					"from_warehouse", frm.doc.source_warehouse);
-			})
+			});
 		}
 	},
 
