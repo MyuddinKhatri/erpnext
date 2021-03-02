@@ -18,6 +18,18 @@ frappe.ui.form.on("Company", {
 			}
 		});
 
+		frm.set_query("default_direct_expenses", function() {
+			return {
+				filters: {"account_type": "Expense Account"}
+			}
+		});
+
+		frm.set_query("default_indirect_expenses", function() {
+			return {
+				filters: {"account_type": "Expense Account"}
+			}
+		});
+
 		frm.set_query("default_selling_terms", function() {
 			return { filters: { selling: 1 } };
 		});
