@@ -743,22 +743,20 @@
    "fieldname": "default_direct_expenses",
    "fieldtype": "Link",
    "label": "Default Direct Expenses",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "default_indirect_expenses",
    "fieldtype": "Link",
    "label": "Default Indirect Expenses",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
  "idx": 1,
  "image_field": "company_logo",
  "is_tree": 1,
- "modified": "2021-03-02 04:32:32.621767",
+ "modified": "2021-02-15 03:01:19.487475",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

@@ -39,6 +39,11 @@ frappe.ui.form.on("Company", {
 		});
 	},
 
+	before_save: function(frm) {
+		frm.toggle_reqd("default_direct_expenses", 1);
+		frm.toggle_reqd("default_indirect_expenses", 1);
+	},
+
 	company_name: function(frm) {
 		if(frm.doc.__islocal) {
 			// add missing " " arg in split method
