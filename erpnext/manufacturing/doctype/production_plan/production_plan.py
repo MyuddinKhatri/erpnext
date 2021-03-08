@@ -808,8 +808,8 @@ def update_status_for_production_plan(production_plan):
 		production_plan (string): Production Plan name
 	"""	
 	production_plan = frappe.get_doc("Production Plan", production_plan)
-	all_received = [item.per_received if item.per_received else int(0) for item in production_plan.mr_items if item.material_request_type == "Purchase"]
-	produced_qty = [item.produced_qty if item.produced_qty else int(0) for item in production_plan.mr_items if item.material_request_type == "Manufacture"]
+	all_received = [item.per_received if item.per_received else 0 for item in production_plan.mr_items if item.material_request_type == "Purchase"]
+	produced_qty = [item.produced_qty if item.produced_qty else 0 for item in production_plan.mr_items if item.material_request_type == "Manufacture"]
 	status_set = all_received + produced_qty
 	if any(status_set):
 		production_plan.db_set("status", "Partially Received")
