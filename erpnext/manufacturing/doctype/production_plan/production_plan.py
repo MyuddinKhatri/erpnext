@@ -813,5 +813,5 @@ def update_status_for_production_plan(production_plan):
 	status_set = all_received + produced_qty
 	if any(status_set):
 		production_plan.db_set("status", "Partially Received")
-	elif all(status_set):
+	if all(status_set):
 		production_plan.db_set("status", "Material Received")
