@@ -14,7 +14,7 @@ frappe.ui.form.on('Batch', {
 		},
 		frm.make_methods = {
 			'Sales Order': () => frappe.model.open_mapped_doc({
-				method: "erpnext.selling.doctype.sales_order.sales_order.make_sales_order",
+				method: "erpnext.selling.doctype.sales_order.sales_order.make_sales_order_from_batch",
 				frm: frm
 			}),
 		}

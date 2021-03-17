@@ -1275,7 +1275,7 @@ def get_customer_item_ref_code(item, customer_name):
 		return customer_names[0].ref_code
 
 @frappe.whitelist()
-def make_sales_order(source_name, target_doc=None):
+def make_sales_order_from_batch(source_name, target_doc=None):
 	"""
 	Creates Sales Order from Batch.
 
@@ -1288,6 +1288,7 @@ def make_sales_order(source_name, target_doc=None):
 	"""
 	batch_fields = frappe.get_value("Batch", source_name, ["item", "item_name"],as_dict=1)
 	if not frappe.db.get_value("Item", batch_fields.item, "is_sales_item"):
+		# throw if the item is not a sales item
 		frappe.throw(_("Following item {0}: {1} is not marked as sales item. You can enable them as sales item from its Item master".format(batch_fields.item, batch_fields.item_name)))
 
 	target_doc = get_mapped_doc("Batch", source_name, {
@@ -1296,6 +1297,7 @@ def make_sales_order(source_name, target_doc=None):
 		},
 	}, target_doc)
 
+	# add line item to sales order document
 	target_doc.append("items", {
 		"item_code": batch_fields.item,
 		"item_name": batch_fields.item_name,
