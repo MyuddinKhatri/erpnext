@@ -1286,13 +1286,16 @@ def make_sales_order(source_name, target_doc=None):
 	Returns:
 		target_doc: Created Sales Order Document
 	"""
+	batch_fields = frappe.get_value("Batch", source_name, ["item", "item_name"],as_dict=1)
+	if not frappe.db.get_value("Item", batch_fields.item, "is_sales_item"):
+		frappe.throw(_("Following item {0}: {1} is not marked as sales item. You can enable them as sales item from its Item master".format(batch_fields.item, batch_fields.item_name)))
+
 	target_doc = get_mapped_doc("Batch", source_name, {
 		"Batch": {
 			"doctype": "Sales Order"
 		},
 	}, target_doc)
 
-	batch_fields = frappe.get_value("Batch", source_name, ["item", "item_name"],as_dict=1)
 	target_doc.append("items", {
 		"item_code": batch_fields.item,
 		"item_name": batch_fields.item_name,
