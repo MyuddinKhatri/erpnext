@@ -11,6 +11,9 @@ frappe.ui.form.on('Batch', {
 					'has_batch_no': 1
 				}
 			};
+		},
+		frm.custom_make_buttons = {
+			'Sales Order': 'Sales Order'
 		}
 	},
 	refresh: (frm) => {
@@ -26,6 +29,11 @@ frappe.ui.form.on('Batch', {
 				frm.trigger("make_material_request");
 			}, __("Create"));
 			this.frm.page.set_inner_btn_group_as_primary(__('Create'));
+			frappe.db.get_value("Item", frm.doc.item, "is_sales_item", (r) => {
+				if(r.is_sales_item) {
+					this.frm.add_custom_button(__('Sales Order'), () => frm.trigger("make_sales_order"), __('Create'));
+				}
+			})
 		}
 	},
 	make_material_request: function (frm) {
@@ -163,6 +171,12 @@ frappe.ui.form.on('Batch', {
 				}
 			});
 		}
+	},
+	make_sales_order: function (frm) {
+		frappe.model.open_mapped_doc({
+			method: "erpnext.selling.doctype.sales_order.sales_order.make_sales_order",
+			frm: frm
+		});
 	}
 })
 
