@@ -1292,7 +1292,7 @@ def make_sales_order(source_name, target_doc=None):
 		},
 	}, target_doc)
 
-	batch_fields = frappe.get_value("Batch", source_name, ["item", "item_name", "stock_uom"],as_dict=1)
+	batch_fields = frappe.get_value("Batch", source_name, ["item", "item_name"],as_dict=1)
 	target_doc.append("items", {
 		"item_code": batch_fields.item,
 		"item_name": batch_fields.item_name,
