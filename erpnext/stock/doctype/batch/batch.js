@@ -13,7 +13,7 @@ frappe.ui.form.on('Batch', {
 			};
 		},
 		frm.make_methods = {
-			'Sales Order': () => frm.trigger("make_sales_order"),
+			'Sales Order': () => frm.trigger("select_customer_and_create_sales_order"),
 			'Package Tag': () => frappe.model.open_mapped_doc({
 				method: "erpnext.compliance.doctype.package_tag.package_tag.make_package_tag_from_batch",
 				frm: frm
@@ -184,15 +184,9 @@ frappe.ui.form.on('Batch', {
 			});
 		}
 	},
-	make_sales_order: function (frm) {
+	select_customer_and_create_sales_order: function (frm) {
 		if (frm.doc.customer) {
-			frappe.model.open_mapped_doc({
-				method: "erpnext.selling.doctype.sales_order.sales_order.make_sales_order_from_batch",
-				frm: frm,
-				args: {
-					customer: frm.doc.customer
-				}
-			})
+			frm.events.create_sales_order(frm, frm.doc.customer);
 		}
 		else {
 			var dialog = new frappe.ui.Dialog({
@@ -208,18 +202,21 @@ frappe.ui.form.on('Batch', {
 				],
 				primary_action: function() {
 					var data = dialog.get_values();
-					frappe.model.open_mapped_doc({
-						method: "erpnext.selling.doctype.sales_order.sales_order.make_sales_order_from_batch",
-						frm: frm,
-						args: {
-							customer: data.customer
-						}
-					})
+					frm.events.create_sales_order(frm, data.customer);
 				},
 				primary_action_label: __('Create Sales Order')
 			});
 			dialog.show();
 		}
+	},
+	create_sales_order: function (frm, customer) {
+		frappe.model.open_mapped_doc({
+			method: "erpnext.selling.doctype.sales_order.sales_order.make_sales_order_from_batch",
+			frm: frm,
+			args: {
+				customer: customer
+			}
+		})
 	}
 })
 
