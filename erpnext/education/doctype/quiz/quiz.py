@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
+import random, math
 from frappe import _
 from frappe.model.document import Document
 
@@ -44,11 +45,34 @@ class Quiz(Document):
 			status = "Pass"
 		else:
 			status = "Fail"
+
+		if self.assessment_questions:
+			for question in response_dict.items():
+				for key in answers:
+					if question == key:
+						try:
+							if isinstance(response_dict[key], list):
+								is_correct = compare_list_elementwise(response_dict[key], answers[key])
+							else:
+								is_correct = (response_dict[key] == answers[key])
+						except Exception as e:
+							is_correct = False
+						result[key] = is_correct
+					score = math.ceil((sum(result.values()) * 100 ) / self.assessment_questions)
+					if score >= self.passing_score:
+						status = "Pass"
+					else:
+						status = "Fail"
 		return result, score, status
 
 
 	def get_questions(self):
-		return [frappe.get_doc('Question', question.question_link) for question in self.question]
+		quiz_questions = [frappe.get_doc('Question', question.question_link) for question in self.question]
+		if self.assessment_questions:
+			return random.sample(quiz_questions, self.assessment_questions)
+		else:
+			return quiz_questions
+
 
 def compare_list_elementwise(*args):
 	try:
