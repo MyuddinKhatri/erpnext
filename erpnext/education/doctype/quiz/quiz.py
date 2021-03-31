@@ -46,6 +46,7 @@ class Quiz(Document):
 		else:
 			status = "Fail"
 
+		# if assessment questions exists then evaluate on the basis of number of questions given in quiz
 		if self.assessment_questions:
 			for question in response_dict.items():
 				for key in answers:
