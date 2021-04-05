@@ -31,41 +31,21 @@ class Quiz(Document):
 		questions = [frappe.get_doc('Question', question.question_link) for question in self.question]
 		answers = {q.name:q.get_answer() for q in questions}
 		result = {}
-		for key in answers:
-			try:
-				if isinstance(response_dict[key], list):
-					is_correct = compare_list_elementwise(response_dict[key], answers[key])
-				else:
-					is_correct = (response_dict[key] == answers[key])
-			except Exception as e:
-				is_correct = False
-			result[key] = is_correct
-		score = (sum(result.values()) * 100 ) / len(answers)
-		if score >= self.passing_score:
-			status = "Pass"
-		else:
-			status = "Fail"
 
 		# if assessment questions exists then evaluate on the basis of number of questions given in quiz
 		if self.assessment_questions:
 			for question in response_dict.items():
-				for key in answers:
-					if question == key:
-						try:
-							if isinstance(response_dict[key], list):
-								is_correct = compare_list_elementwise(response_dict[key], answers[key])
-							else:
-								is_correct = (response_dict[key] == answers[key])
-						except Exception as e:
-							is_correct = False
-						result[key] = is_correct
-					score = math.ceil((sum(result.values()) * 100 ) / self.assessment_questions)
-					if score >= self.passing_score:
-						status = "Pass"
-					else:
-						status = "Fail"
-		return result, score, status
+				result = evaluate_response(answers, response_dict)
+			score = math.ceil((sum(result.values()) * 100 ) / self.assessment_questions)
+		else:
+			result = evaluate_response(answers, response_dict,)
+			score = (sum(result.values()) * 100 ) / len(answers)
 
+		if score >= self.passing_score:
+			status = "Pass"
+		else:
+			status = "Fail"
+		return result, score, status
 
 	def get_questions(self):
 		quiz_questions = [frappe.get_doc('Question', question.question_link) for question in self.question]
@@ -83,4 +63,17 @@ def compare_list_elementwise(*args):
 			return False
 	except TypeError:
 		frappe.throw(_("Compare List function takes on list arguments"))
+
+def evaluate_response(answers, response_dict):
+	result = {}
+	for key in answers:
+		try:
+			if isinstance(response_dict[key], list):
+				is_correct = compare_list_elementwise(response_dict[key], answers[key])
+			else:
+				is_correct = (response_dict[key] == answers[key])
+		except Exception as e:
+			is_correct = False
+		result[key] = is_correct
+	return result
 
