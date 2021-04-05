@@ -32,13 +32,12 @@ class Quiz(Document):
 		answers = {q.name:q.get_answer() for q in questions}
 		result = {}
 
+		result = evaluate_response(answers, response_dict)
+
 		# if assessment questions exists then evaluate on the basis of number of questions given in quiz
 		if self.assessment_questions:
-			for question in response_dict.items():
-				result = evaluate_response(answers, response_dict)
 			score = math.ceil((sum(result.values()) * 100 ) / self.assessment_questions)
 		else:
-			result = evaluate_response(answers, response_dict,)
 			score = (sum(result.values()) * 100 ) / len(answers)
 
 		if score >= self.passing_score:
