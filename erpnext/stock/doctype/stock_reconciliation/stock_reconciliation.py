@@ -499,15 +499,15 @@ def get_items(warehouse, posting_date, posting_time, company):
 				if batch_nos:
 					for batch_no in batch_nos:
 						res.append({
-						"item_code": d[0],
-						"warehouse": d[2],
-						"batch_no": batch_no.batch_no,
-						"qty": batch_no.actual_qty,
-						"item_name": d[1],
-						"valuation_rate": batch_no.valuation_rate,
-						"current_qty": stock_bal[0],
-						"current_valuation_rate": stock_bal[1]
-					})
+							"item_code": d[0],
+							"warehouse": d[2],
+							"batch_no": batch_no.batch_no,
+							"qty": batch_no.actual_qty,
+							"item_name": d[1],
+							"valuation_rate": batch_no.valuation_rate,
+							"current_qty": stock_bal[0],
+							"current_valuation_rate": stock_bal[1]
+						})
 			else:
 				res.append({
 					"item_code": d[0],
