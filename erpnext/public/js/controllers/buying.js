@@ -336,13 +336,15 @@ erpnext.buying.BuyingController = erpnext.TransactionController.extend({
 							fieldtype: 'Float',
 							fieldname: 'rate',
 							read_only: 1,
-							in_list_view: 1
+							in_list_view: 1,
+							precision: 6
 						},
 						{
 							label: __("Amount"),
 							fieldtype: 'Float',
 							fieldname: 'amount',
-							in_list_view: 1
+							in_list_view: 1,
+							precision: 6
 						}
 					],
 				}
