@@ -465,20 +465,59 @@ def get_items(warehouse, posting_date, posting_time, company):
 	""", (lft, rgt, company))
 
 	res = []
-	for d in set(items):
+	for d in items:
 		stock_bal = get_stock_balance(d[0], d[2], posting_date, posting_time,
 			with_valuation_rate=True)
 
 		if frappe.db.get_value("Item", d[0], "disabled") == 0:
-			res.append({
-				"item_code": d[0],
-				"warehouse": d[2],
-				"qty": stock_bal[0],
-				"item_name": d[1],
-				"valuation_rate": stock_bal[1],
-				"current_qty": stock_bal[0],
-				"current_valuation_rate": stock_bal[1]
-			})
+			package_tags = frappe.db.sql("""
+				Select distinct sle.package_tag, sle.actual_qty, sle.valuation_rate
+				from `tabStock Ledger Entry` sle
+				where sle.item_code = %s and sle.warehouse = %s and sle.package_tag != ''
+			""",(d[0], d[2]), as_dict=1)
+
+			batch_nos = frappe.db.sql("""
+				Select distinct sle.batch_no, sle.actual_qty, sle.valuation_rate
+				from `tabStock Ledger Entry` sle
+				where sle.item_code = %s and sle.warehouse = %s and sle.batch_no != ''
+			""",(d[0], d[2]), as_dict=1)
+
+			if package_tags or batch_nos:
+				if package_tags:
+					for package_tag in package_tags:
+						res.append({
+							"item_code": d[0],
+							"warehouse": d[2],
+							"package_tag": package_tag.package_tag,
+							"qty": package_tag.actual_qty,
+							"item_name": d[1],
+							"valuation_rate": package_tag.valuation_rate,
+							"current_qty": stock_bal[0],
+							"current_valuation_rate": stock_bal[1]
+						})
+
+				if batch_nos:
+					for batch_no in batch_nos:
+						res.append({
+						"item_code": d[0],
+						"warehouse": d[2],
+						"batch_no": batch_no.batch_no,
+						"qty": batch_no.actual_qty,
+						"item_name": d[1],
+						"valuation_rate": batch_no.valuation_rate,
+						"current_qty": stock_bal[0],
+						"current_valuation_rate": stock_bal[1]
+					})
+			else:
+				res.append({
+					"item_code": d[0],
+					"warehouse": d[2],
+					"qty": stock_bal[0],
+					"item_name": d[1],
+					"valuation_rate": stock_bal[1],
+					"current_qty": stock_bal[0],
+					"current_valuation_rate": stock_bal[1]
+				})
 
 	return res
 
