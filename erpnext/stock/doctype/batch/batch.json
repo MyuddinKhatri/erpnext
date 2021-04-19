@@ -136,7 +136,8 @@
   {
    "fieldname": "supplier",
    "fieldtype": "Data",
-   "label": "Supplier"
+   "label": "Supplier",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_9",
@@ -223,14 +224,15 @@
   {
    "fieldname": "customer_providing_item",
    "fieldtype": "Data",
-   "label": "Customer Providing Item"
+   "label": "Customer Providing Item",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-archive",
  "idx": 1,
  "image_field": "image",
  "max_attachments": 5,
- "modified": "2021-04-19 04:15:29.716595",
+ "modified": "2021-04-19 05:08:25.621400",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Batch",
