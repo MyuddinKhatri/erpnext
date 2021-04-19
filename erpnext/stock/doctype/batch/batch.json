@@ -27,9 +27,8 @@
   "source",
   "supplier",
   "customer",
+  "customer_providing_item",
   "column_break_9",
-  "customer_and_supplier_information_section",
-  "customer_and_supplier_information",
   "reference_doctype",
   "reference_name",
   "certificate_of_analysis",
@@ -136,10 +135,8 @@
   },
   {
    "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier",
-   "read_only": 1
+   "fieldtype": "Data",
+   "label": "Supplier"
   },
   {
    "fieldname": "column_break_9",
@@ -224,23 +221,16 @@
    "read_only": 1
   },
   {
-   "fieldname": "customer_and_supplier_information",
-   "fieldtype": "Table",
-   "label": "Customer and Supplier Information",
-   "options": "Customer and Supplier Information",
-   "read_only": 1
-  },
-  {
-   "fieldname": "customer_and_supplier_information_section",
-   "fieldtype": "Section Break",
-   "label": "Customer and Supplier Information"
+   "fieldname": "customer_providing_item",
+   "fieldtype": "Data",
+   "label": "Customer Providing Item"
   }
  ],
  "icon": "fa fa-archive",
  "idx": 1,
  "image_field": "image",
  "max_attachments": 5,
- "modified": "2021-04-17 13:20:28.763758",
+ "modified": "2021-04-19 04:15:29.716595",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Batch",

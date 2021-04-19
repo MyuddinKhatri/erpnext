@@ -173,7 +173,7 @@ class PurchaseReceipt(BuyingController):
 		self.update_package_tag_batch()
 		update_per_received_in_production_plan(self)
 		self.update_package_tag_is_used()
-		self.update_batch_with_supplier_information()
+		self.update_batch_with_supplier()
 
 
 	def before_cancel(self):
@@ -216,16 +216,11 @@ class PurchaseReceipt(BuyingController):
 				bin = frappe.db.sql("select actual_qty from `tabBin` where item_code = %s and warehouse = %s", (d.rm_item_code, self.supplier_warehouse), as_dict = 1)
 				d.current_stock = bin and flt(bin[0]['actual_qty']) or 0
 
-	def update_batch_with_supplier_information(self):
+	def update_batch_with_supplier(self):
 		for item in self.items:
-			batch_doc = frappe.get_doc("Batch", item.batch_no)
-			batch_doc.append("customer_and_supplier_information", {
-				"is_customer_provided_item": 0,
-				"name_of_business": "Supplier - " + self.supplier,
-				"qty": item.qty,
-				"from_document": "Purchase Receipt - " + self.name
-			})
-			batch_doc.save()
+			batch_supplier = frappe.db.get_value("Batch", item.batch_no, "supplier")
+			if not batch_supplier:
+				frappe.db.set_value("Batch", item.batch_no, "supplier", self.supplier)
 
 	def get_gl_entries(self, warehouse_account=None):
 		from erpnext.accounts.general_ledger import process_gl_map
