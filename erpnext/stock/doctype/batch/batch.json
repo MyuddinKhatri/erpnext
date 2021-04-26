@@ -135,8 +135,9 @@
   },
   {
    "fieldname": "supplier",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Supplier",
+   "options": "Supplier",
    "read_only": 1
   },
   {
@@ -223,8 +224,9 @@
   },
   {
    "fieldname": "customer_providing_item",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Customer Providing Item",
+   "options": "Customer",
    "read_only": 1
   }
  ],
@@ -232,7 +234,7 @@
  "idx": 1,
  "image_field": "image",
  "max_attachments": 5,
- "modified": "2021-04-19 05:08:25.621400",
+ "modified": "2021-04-26 00:19:49.205175",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Batch",
