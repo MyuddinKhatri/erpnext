@@ -100,7 +100,7 @@ class StockEntry(StockController):
 			self.update_so_in_serial_number()
 		self.update_package_tag()
 		self.update_package_tag_is_used()
-		self.update_batch_with_customer_providing_item()
+		self.update_batch_with_customer_provided_item()
 
 	def on_cancel(self):
 
@@ -690,7 +690,7 @@ class StockEntry(StockController):
 
 		self.make_sl_entries(sl_entries, self.amended_from and 'Yes' or 'No')
 
-	def update_batch_with_customer_providing_item(self):
+	def update_batch_with_customer_provided_item(self):
 		if self.stock_entry_type == "Material Receipt":
 			for item in self.items:
 				item_data = frappe.db.get_values("Item", item.item_code, ["is_customer_provided_item", "has_batch_no"], as_dict=1)
