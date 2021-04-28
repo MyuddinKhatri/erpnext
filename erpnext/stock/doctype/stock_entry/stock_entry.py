@@ -695,10 +695,10 @@ class StockEntry(StockController):
 			for item in self.items:
 				item_data = frappe.db.get_values("Item", item.item_code, ["is_customer_provided_item", "has_batch_no"], as_dict=1)
 				if item_data[0].is_customer_provided_item and item_data[0].has_batch_no and item.batch_no and item.material_request:
-					batch_customer_providing_item = frappe.db.get_value("Batch", item.batch_no, "customer_providing_item")
-					if not batch_customer_providing_item:
+					batch_provided_by_customer = frappe.db.get_value("Batch", item.batch_no, "provided_by_customer")
+					if not batch_provided_by_customer:
 						customer = frappe.db.get_value("Material Request", item.material_request, "customer")
-						frappe.db.set_value("Batch", item.batch_no, "customer_providing_item", customer)
+						frappe.db.set_value("Batch", item.batch_no, "provided_by_customer", customer)
 
 	def get_gl_entries(self, warehouse_account):
 		gl_entries = super(StockEntry, self).get_gl_entries(warehouse_account)

@@ -28,7 +28,7 @@
   "source",
   "supplier",
   "customer",
-  "customer_providing_item",
+  "provided_by_customer",
   "column_break_9",
   "reference_doctype",
   "reference_name",
@@ -224,23 +224,23 @@
    "read_only": 1
   },
   {
-   "fieldname": "customer_providing_item",
-   "fieldtype": "Link",
-   "label": "Customer Providing Item",
-   "options": "Customer",
-   "read_only": 1
-  },
-  {
    "fieldname": "coa_batch",
    "fieldtype": "Data",
    "label": "COA Batch"
+  },
+  {
+   "fieldname": "provided_by_customer",
+   "fieldtype": "Link",
+   "label": "Provided by Customer",
+   "options": "Customer",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-archive",
  "idx": 1,
  "image_field": "image",
  "max_attachments": 5,
- "modified": "2021-04-26 00:19:49.205175",
+ "modified": "2021-04-28 01:50:19.183569",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Batch",
