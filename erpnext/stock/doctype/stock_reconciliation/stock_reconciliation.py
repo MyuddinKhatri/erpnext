@@ -470,6 +470,7 @@ def get_items(warehouse, posting_date, posting_time, company):
 			with_valuation_rate=True)
 
 		if frappe.db.get_value("Item", d[0], "disabled") == 0:
+			# get package_tags and batch_nos from Stock Ledger Entry
 			package_tags_and_batch_nos = frappe.get_all("Stock Ledger Entry",
 				filters={"item_code": d[0], "warehouse": d[2]},
 				or_filters = [
@@ -482,6 +483,7 @@ def get_items(warehouse, posting_date, posting_time, company):
 
 			if package_tags_and_batch_nos:
 				for package_tag_and_batch in package_tags_and_batch_nos:
+					# append to response to be added in child table
 					res.append({
 						"item_code": package_tag_and_batch.item_code,
 						"warehouse": package_tag_and_batch.warehouse,
