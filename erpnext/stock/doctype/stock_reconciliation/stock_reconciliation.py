@@ -482,37 +482,16 @@ def get_items(warehouse, posting_date, posting_time, company):
 
 			if package_tags_and_batch_nos:
 				for package_tag_and_batch in package_tags_and_batch_nos:
-					if package_tag_and_batch.package_tag and package_tag_and_batch.batch_no:
-						res.append({
-							"item_code": package_tag_and_batch.item_code,
-							"warehouse": package_tag_and_batch.warehouse,
-							"package_tag": package_tag_and_batch.package_tag,
-							"batch_no": package_tag_and_batch.batch_no,
-							"qty": package_tag_and_batch.actual_qty,
-							"valuation_rate": package_tag_and_batch.valuation_rate,
-							"current_qty": stock_bal[0],
-							"current_valuation_rate": stock_bal[1]
-						})
-					elif package_tag_and_batch.package_tag:
-						res.append({
-							"item_code": package_tag_and_batch.item_code,
-							"warehouse": package_tag_and_batch.warehouse,
-							"package_tag": package_tag_and_batch.package_tag,
-							"qty": package_tag_and_batch.actual_qty,
-							"valuation_rate": package_tag_and_batch.valuation_rate,
-							"current_qty": stock_bal[0],
-							"current_valuation_rate": stock_bal[1]
-						})
-					elif package_tag_and_batch.batch_no:
-						res.append({
-							"item_code": package_tag_and_batch.item_code,
-							"warehouse": package_tag_and_batch.warehouse,
-							"batch_no": package_tag_and_batch.batch_no,
-							"qty": package_tag_and_batch.actual_qty,
-							"valuation_rate": package_tag_and_batch.valuation_rate,
-							"current_qty": stock_bal[0],
-							"current_valuation_rate": stock_bal[1]
-						})
+					res.append({
+						"item_code": package_tag_and_batch.item_code,
+						"warehouse": package_tag_and_batch.warehouse,
+						"package_tag": package_tag_and_batch.package_tag,
+						"batch_no": package_tag_and_batch.batch_no,
+						"qty": package_tag_and_batch.actual_qty,
+						"valuation_rate": package_tag_and_batch.valuation_rate,
+						"current_qty": stock_bal[0],
+						"current_valuation_rate": stock_bal[1]
+					})
 
 	return res
 
