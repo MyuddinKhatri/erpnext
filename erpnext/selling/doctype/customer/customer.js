@@ -237,6 +237,11 @@ frappe.ui.form.on("Customer", {
 		if(frm.days_selected) {
 			frm.set_value("delivery_days", JSON.stringify(frm.days_selected.get_value()));
 		}
+		frappe.db.exists('Customer', frm.doc.customer_name).then( exists => {
+			if (exists) {
+				frappe.msgprint(__(`Customer ${frm.doc.customer_name} already exists.`));
+			}
+		});
 	},
 	make_dashboard_and_show_progress: function(frm) {
 		let bars = [];
