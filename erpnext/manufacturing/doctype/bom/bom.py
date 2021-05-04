@@ -254,6 +254,7 @@ class BOM(WebsiteGenerator):
 			if save:
 				d.db_update()
 
+		# update scrape item rate with valuation rate from Ledger
 		for d in self.get("scrap_items"):
 			rate = self.get_rm_rate({
 				"item_code": d.item_code,
