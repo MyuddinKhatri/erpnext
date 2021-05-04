@@ -225,7 +225,7 @@ frappe.listview_settings['Sales Order'] = {
 					Are you sure you want to create {0} Delivery Note(s)?`, [selected_docs.length]),
 				() => {
 					frappe.call({
-						method: "erpnext.selling.doctype.sales_order.sales_order.create_muliple_delivery_notes",
+						method: "erpnext.selling.doctype.sales_order.sales_order.create_multiple_delivery_notes",
 						args: {
 							"orders": docnames
 						},
@@ -303,7 +303,7 @@ frappe.listview_settings['Sales Order'] = {
 					Are you sure you want to create {0} Production Plan(s)?`, [selected_docs.length]),
 				() => {
 					frappe.call({
-						method: "erpnext.selling.doctype.sales_order.sales_order.create_muliple_production_plans",
+						method: "erpnext.selling.doctype.sales_order.sales_order.create_multiple_production_plans",
 						args: {
 							"orders": docnames
 						},

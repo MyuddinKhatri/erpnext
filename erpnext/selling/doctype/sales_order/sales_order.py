@@ -1192,7 +1192,7 @@ def create_multiple_sales_invoices(orders):
 	return created_orders
 
 @frappe.whitelist()
-def create_muliple_delivery_notes(orders):
+def create_multiple_delivery_notes(orders):
 	"""Creating different Delivery Notes from multiple Sales Order."""
 	orders = json.loads(orders)
 
@@ -1230,7 +1230,7 @@ def create_muliple_delivery_notes(orders):
 	return created_orders
 
 @frappe.whitelist()
-def create_muliple_production_plans(orders):
+def create_multiple_production_plans(orders):
 	"""Creating different Production Plans from multiple Sales Order."""
 	orders = json.loads(orders)
 
@@ -1240,11 +1240,11 @@ def create_muliple_production_plans(orders):
 		customer = frappe.db.get_value("Sales Order", order, "customer")
 
 		# Create a new Production Plan.
-		order_doc = make_production_plan(order)
+		production_plan_doc = make_production_plan(order)
 		# if no items can be picked, do not create an empty production plan.
-		if order_doc.get("po_items"):
-			order_doc.save()
-			production_plans = [order_doc.name]
+		if production_plan_doc.get("po_items"):
+			production_plan_doc.save()
+			production_plans = [production_plan_doc.name]
 			created = True
 		else:
 			production_plans = []
