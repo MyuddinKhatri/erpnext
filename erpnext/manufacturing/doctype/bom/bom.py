@@ -264,6 +264,7 @@ class BOM(WebsiteGenerator):
 
 			if rate:
 				d.rate = rate
+
 			d.amount = flt(d.rate) * flt(d.stock_qty)
 			d.base_rate = flt(d.rate) * flt(self.conversion_rate)
 			d.base_amount = flt(d.amount) * flt(self.conversion_rate)
