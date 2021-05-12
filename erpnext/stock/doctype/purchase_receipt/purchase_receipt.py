@@ -217,6 +217,7 @@ class PurchaseReceipt(BuyingController):
 				d.current_stock = bin and flt(bin[0]['actual_qty']) or 0
 
 	def update_batch_with_supplier(self):
+		# update batch doc with supplier if batch doc don't have supplier
 		for item in self.items:
 			batch_supplier = frappe.db.get_value("Batch", item.batch_no, "supplier")
 			if not batch_supplier:

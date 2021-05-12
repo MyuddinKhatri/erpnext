@@ -691,6 +691,7 @@ class StockEntry(StockController):
 		self.make_sl_entries(sl_entries, self.amended_from and 'Yes' or 'No')
 
 	def update_batch_with_customer_provided_item(self):
+		# update batch doc with provided by customer if batch doc don't have provided by customer
 		if self.stock_entry_type == "Material Receipt":
 			for item in self.items:
 				item_data = frappe.db.get_values("Item", item.item_code, ["is_customer_provided_item", "has_batch_no"], as_dict=1)
