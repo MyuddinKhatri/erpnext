@@ -1,5 +1,5 @@
 {
- "autoname": "Product-Recall-Notice.#####",
+ "autoname": "Product-Recall-Notice-.#####",
  "creation": "2021-05-28 04:57:54.020717",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -62,7 +62,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2021-05-28 05:17:18.649551",
+ "modified": "2021-05-28 05:26:01.408760",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Product Recall Notice",
