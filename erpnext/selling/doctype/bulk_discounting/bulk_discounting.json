@@ -1,0 +1,37 @@
+{
+ "autoname": "BULK-DISCOUNTING-.####",
+ "creation": "2021-06-01 00:59:45.635888",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "bulk_qty",
+  "discount_percentage"
+ ],
+ "fields": [
+  {
+   "description": "Discount to be applied to a quantity greater than the quantity mentioned in Bulk Quantity.",
+   "fieldname": "bulk_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Bulk Quantity"
+  },
+  {
+   "fieldname": "discount_percentage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Discount Percentage"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-06-01 01:01:28.445016",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Bulk Discounting",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
