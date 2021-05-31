@@ -10,6 +10,12 @@ from frappe.utils import comma_and
 
 class ProductRecall(Document):
 	def on_submit(self):
+		self.create_prodcut_recall_notice()
+
+	def create_prodcut_recall_notice(self):
+		"""
+		Create Product Recall Notice with items from the batch entered.
+		"""
 		batch = frappe.get_doc("Batch", self.batch_no)
 		items_in_warehouse = []
 		items_delivered = []
@@ -66,10 +72,10 @@ class ProductRecall(Document):
 		prn_doc_list = []
 		if items_delivered:
 			doc_recall_from_customer = frappe.new_doc("Product Recall Notice")
-			doc_recall_from_customer.product_recall = self.name
-			doc_recall_from_customer.recall_from = "Customer"
-			doc_recall_from_customer.recall_warehouse = self.recall_warehouse
 			doc_recall_from_customer.update({
+				"product_recall": self.name,
+				"recall_from" : "Customer",
+				"recall_warehouse" : self.recall_warehouse,
 				"items": items_delivered
 			})
 			doc_recall_from_customer.save()
@@ -77,10 +83,10 @@ class ProductRecall(Document):
 
 		if items_in_warehouse:
 			doc_recall_from_warehouse = frappe.new_doc("Product Recall Notice")
-			doc_recall_from_warehouse.product_recall = self.name
-			doc_recall_from_warehouse.recall_from = "Warehouse"
-			doc_recall_from_warehouse.recall_warehouse = self.recall_warehouse
 			doc_recall_from_warehouse.update({
+				"product_recall" : self.name,
+				"recall_from" : "Warehouse",
+				"recall_warehouse" : self.recall_warehouse,
 				"items": items_in_warehouse
 			})
 			doc_recall_from_warehouse.save()

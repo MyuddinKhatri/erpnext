@@ -12,6 +12,15 @@ class ProductRecallNotice(Document):
 
 @frappe.whitelist()
 def create_stock_entry(product_recall_notice):
+	"""
+	Create Stock Entry to put items in recall warehouse.
+
+	Args:
+		product_recall_notice (doc): Product Recall Notice Doc to create Stock Entry
+
+	Returns:
+		stock_entry: returns name of stock entry created with link to its form
+	"""
 	product_recall_notice = json.loads(product_recall_notice)
 	se_items = []
 	stock_entry_doc = frappe.new_doc("Stock Entry")
