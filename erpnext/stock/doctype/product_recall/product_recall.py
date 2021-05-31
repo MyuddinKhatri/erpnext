@@ -91,6 +91,5 @@ class ProductRecall(Document):
 			})
 			doc_recall_from_warehouse.save()
 			prn_doc_list.append(doc_recall_from_warehouse)
-		prn_doc_list = ["""<a href="#Form/Product Recall Notice/{0}">{1}</a>""".format(m.name, m.name) \
-				for m in prn_doc_list]
+		prn_doc_list = ["""<a href="#Form/Product Recall Notice/{0}">{1}</a>""".format(m.name, m.name) for m in prn_doc_list]
 		frappe.msgprint(_("{0} created").format(comma_and(prn_doc_list)))

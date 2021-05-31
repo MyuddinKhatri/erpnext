@@ -13,11 +13,11 @@ frappe.ui.form.on('Product Recall Notice', {
 					},
 					callback: function(res) {
 						if(res.message) {
-							frappe.msgprint(__(`Stock Entry created ${res.message.stock_entry}`))
+							frappe.msgprint(__(`Stock Entry created ${res.message.stock_entry}`));
 						}
 					}
-				})
-			})
+				});
+			});
 		}
 	}
 });
