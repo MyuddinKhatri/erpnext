@@ -205,6 +205,7 @@ class ProductionPlan(Document):
 		self.db_set("total_produced_qty", self.total_produced_qty, update_modified=False)
 
 	def calculate_produced_percentage(self):
+		# calculate produced_percentage on the basis on requested_qty and produced_qty
 		for mr_item in self.mr_items:
 			if mr_item.material_request_type == "Manufacture" and mr_item.produced_qty:
 				produced_percentage = (mr_item.requested_qty / mr_item.produced_qty) * 100
