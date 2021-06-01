@@ -20,11 +20,12 @@ class ProductRecall(Document):
 		items_in_warehouse = []
 		items_delivered = []
 
-		sle_list = frappe.get_list("Stock Ledger Entry", 
+		sle_list = frappe.get_list("Stock Ledger Entry",
 			[["batch_no", "=", batch.name]], ["name"])
 
 		for sle in sle_list:
 			sle_doc = frappe.get_doc("Stock Ledger Entry", sle.name).as_dict()
+			# pop the 0th element from sle_list once sle_doc is obtained against sle name
 			sle_list.pop(0)
 
 			if sle_doc.voucher_type == "Stock Entry":
@@ -36,6 +37,7 @@ class ProductRecall(Document):
 							[["batch_no", "=", batch_doc.name]], ["name"])
 						sle_list = sle_list + sle_data
 						if (item.item_code and item.batch_no and item.parent) not in items_in_warehouse:
+							# append to items_in_warehouse for product recall notice to be created with recall from warehouse
 							items_in_warehouse = items_in_warehouse + [{
 								"item_code": item.item_code,
 								"item_name": item.item_name,
@@ -55,6 +57,7 @@ class ProductRecall(Document):
 						sle_data = frappe.get_list("Stock Ledger Entry",
 							[["batch_no", "=", batch_doc.name]], ["name"])
 						sle_list = sle_list + sle_data
+						# append to items_in_warehouse for product recall notice to be created with recall from customer
 						items_delivered = items_delivered + [{
 							"customer": dn.customer,
 							"item_code": item.item_code,
@@ -66,11 +69,13 @@ class ProductRecall(Document):
 							"reference_docname": item.parent
 						}]
 
+		# create list of dictionaries with unique value of item_code and batch_no
 		items_in_warehouse = list({(v['item_code'], v['batch_no']): v for v in items_in_warehouse}.values())
 		items_delivered = list({(v['item_code'], v['batch_no']): v for v in items_delivered}.values())
 
 		prn_doc_list = []
 		if items_delivered:
+			# create Product Recall Notice with recall_from Customer
 			doc_recall_from_customer = frappe.new_doc("Product Recall Notice")
 			doc_recall_from_customer.update({
 				"product_recall": self.name,
@@ -82,6 +87,7 @@ class ProductRecall(Document):
 			prn_doc_list.append(doc_recall_from_customer)
 
 		if items_in_warehouse:
+			# create Product Recall Notice with recall_from Warehouse
 			doc_recall_from_warehouse = frappe.new_doc("Product Recall Notice")
 			doc_recall_from_warehouse.update({
 				"product_recall" : self.name,
