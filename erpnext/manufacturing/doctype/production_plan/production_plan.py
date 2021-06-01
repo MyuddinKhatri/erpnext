@@ -208,7 +208,7 @@ class ProductionPlan(Document):
 		# calculate produced_percentage on the basis on requested_qty and produced_qty
 		for mr_item in self.mr_items:
 			if mr_item.material_request_type == "Manufacture" and mr_item.produced_qty:
-				produced_percentage = (mr_item.requested_qty / mr_item.produced_qty) * 100
+				produced_percentage = (flt(mr_item.requested_qty) / flt(mr_item.produced_qty)) * 100
 				mr_item.produced_percentage = produced_percentage
 				mr_item.db_update()
 
