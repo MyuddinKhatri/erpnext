@@ -6,7 +6,7 @@ frappe.ui.form.on('Product Recall Notice', {
 		if(frm.doc.docstatus == 1) {
 			frm.add_custom_button(__("Receive Inventory"), function() {
 				frappe.call({
-					method: "erpnext.stock.doctype.product_recall_notice.product_recall_notice.create_stock_entry",
+					method: "erpnext.stock.doctype.product_recall_notice.product_recall_notice.create_stock_entry_from_product_recall_notice",
 					freeze: true,
 					args: {
 						"product_recall_notice": frm.doc

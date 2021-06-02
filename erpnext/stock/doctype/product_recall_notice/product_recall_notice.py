@@ -11,7 +11,7 @@ class ProductRecallNotice(Document):
 	pass
 
 @frappe.whitelist()
-def create_stock_entry(product_recall_notice):
+def create_stock_entry_from_product_recall_notice(product_recall_notice):
 	"""
 	Create Stock Entry to put items in recall warehouse.
 
@@ -27,7 +27,7 @@ def create_stock_entry(product_recall_notice):
 
 	if product_recall_notice.get("recall_from") == "Warehouse":
 		stock_entry_doc.stock_entry_type = "Material Transfer"
-	elif product_recall_notice.get("recall_from") == "Customer":
+	else:
 		stock_entry_doc.stock_entry_type = "Material Receipt"
 
 	for item in product_recall_notice.get("items"):
@@ -42,7 +42,7 @@ def create_stock_entry(product_recall_notice):
 		"items": se_items
 	})
 	stock_entry_doc.run_method("set_missing_values")
-	stock_entry_doc.save()
+	stock_entry_doc.save(ignore_permissions=True)
 
 	return {
 		"stock_entry": frappe.utils.get_link_to_form('Stock Entry', stock_entry_doc.name)

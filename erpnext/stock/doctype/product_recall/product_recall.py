@@ -10,9 +10,9 @@ from frappe.utils import comma_and
 
 class ProductRecall(Document):
 	def on_submit(self):
-		self.create_prodcut_recall_notice()
+		self.create_product_recall_notice()
 
-	def create_prodcut_recall_notice(self):
+	def create_product_recall_notice(self):
 		"""
 		Create Product Recall Notice with items from the batch entered.
 		"""
@@ -28,6 +28,7 @@ class ProductRecall(Document):
 			# pop the 0th element from sle_list once sle_doc is obtained against sle name
 			sle_list.pop(0)
 
+			# append to items_in_warehouse for product recall notice to be created with recall from warehouse
 			if sle_doc.voucher_type == "Stock Entry":
 				se = frappe.get_doc("Stock Entry", sle_doc.voucher_no).as_dict()
 				for item in se.get("items"):
@@ -37,7 +38,6 @@ class ProductRecall(Document):
 							[["batch_no", "=", batch_doc.name]], ["name"])
 						sle_list = sle_list + sle_data
 						if (item.item_code and item.batch_no and item.parent) not in items_in_warehouse:
-							# append to items_in_warehouse for product recall notice to be created with recall from warehouse
 							items_in_warehouse = items_in_warehouse + [{
 								"item_code": item.item_code,
 								"item_name": item.item_name,
@@ -49,6 +49,7 @@ class ProductRecall(Document):
 								"reference_docname": item.parent
 							}]
 
+			# append to items_in_warehouse for product recall notice to be created with recall from customer
 			if sle_doc.voucher_type == "Delivery Note":
 				dn = frappe.get_doc("Delivery Note", sle_doc.voucher_no).as_dict()
 				for item in dn.get("items"):
@@ -57,7 +58,6 @@ class ProductRecall(Document):
 						sle_data = frappe.get_list("Stock Ledger Entry",
 							[["batch_no", "=", batch_doc.name]], ["name"])
 						sle_list = sle_list + sle_data
-						# append to items_in_warehouse for product recall notice to be created with recall from customer
 						items_delivered = items_delivered + [{
 							"customer": dn.customer,
 							"item_code": item.item_code,
@@ -79,8 +79,8 @@ class ProductRecall(Document):
 			doc_recall_from_customer = frappe.new_doc("Product Recall Notice")
 			doc_recall_from_customer.update({
 				"product_recall": self.name,
-				"recall_from" : "Customer",
-				"recall_warehouse" : self.recall_warehouse,
+				"recall_from": "Customer",
+				"recall_warehouse": self.recall_warehouse,
 				"items": items_delivered
 			})
 			doc_recall_from_customer.save()
@@ -90,12 +90,12 @@ class ProductRecall(Document):
 			# create Product Recall Notice with recall_from Warehouse
 			doc_recall_from_warehouse = frappe.new_doc("Product Recall Notice")
 			doc_recall_from_warehouse.update({
-				"product_recall" : self.name,
-				"recall_from" : "Warehouse",
-				"recall_warehouse" : self.recall_warehouse,
+				"product_recall": self.name,
+				"recall_from": "Warehouse",
+				"recall_warehouse": self.recall_warehouse,
 				"items": items_in_warehouse
 			})
 			doc_recall_from_warehouse.save()
 			prn_doc_list.append(doc_recall_from_warehouse)
-		prn_doc_list = ["""<a href="#Form/Product Recall Notice/{0}">{1}</a>""".format(m.name, m.name) for m in prn_doc_list]
+		prn_doc_list = ["""<a href="#Form/Product Recall Notice/{0}">{1}</a>""".format(m.name) for m in prn_doc_list]
 		frappe.msgprint(_("{0} created").format(comma_and(prn_doc_list)))
