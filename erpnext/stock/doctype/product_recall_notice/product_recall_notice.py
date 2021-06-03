@@ -33,7 +33,7 @@ def create_stock_entry_from_product_recall_notice(product_recall_notice):
 	for item in product_recall_notice.get("items"):
 		se_items.append({
 			"item_code":item.get("item_code"),
-			"qty":item.get("qty"),
+			"qty": item.get("qty"),
 			"batch_no": item.get("batch_no"),
 			"s_warehouse": item.get("warehouse") if stock_entry_doc.stock_entry_type == "Material Transfer" else None,
 			"t_warehouse": product_recall_notice.get("recall_warehouse")
