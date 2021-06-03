@@ -21,52 +21,62 @@ class ProductRecall(Document):
 		items_delivered = []
 
 		sle_list = frappe.get_list("Stock Ledger Entry",
-			[["batch_no", "=", batch.name]], ["name"])
+			[["batch_no", "=", batch.name]], ["name", "voucher_type", "voucher_no"])
+
+		sle_expanded_list = []
 
 		for sle in sle_list:
 			sle_doc = frappe.get_doc("Stock Ledger Entry", sle.name).as_dict()
-			# pop the 0th element from sle_list once sle_doc is obtained against sle name
-			sle_list.pop(0)
 
-			# append to items_in_warehouse for product recall notice to be created with recall from warehouse
+			# append to sle_expanded_list for product recall notice to be created with recall from warehouse
 			if sle_doc.voucher_type == "Stock Entry":
 				se = frappe.get_doc("Stock Entry", sle_doc.voucher_no).as_dict()
 				for item in se.get("items"):
 					if item.batch_no:
-						batch_doc = frappe.get_doc("Batch", item.batch_no)
 						sle_data = frappe.get_list("Stock Ledger Entry",
-							[["batch_no", "=", batch_doc.name]], ["name"])
+							[["batch_no", "=", item.batch_no]], ["name", "voucher_type", "voucher_no"])
 						sle_list = sle_list + sle_data
-						if (item.item_code and item.batch_no and item.parent) not in items_in_warehouse:
-							items_in_warehouse = items_in_warehouse + [{
-								"item_code": item.item_code,
-								"item_name": item.item_name,
-								"batch_no": item.batch_no,
-								"package_tag": item.package_tag,
-								"warehouse": item.t_warehouse,
-								"qty": item.qty,
-								"reference_doctype": item.parenttype,
-								"reference_docname": item.parent
-							}]
+						sle_expanded_list = sle_list + sle_data
 
-			# append to items_in_warehouse for product recall notice to be created with recall from customer
+			# append to sle_expanded_list for product recall notice to be created with recall from customer
 			if sle_doc.voucher_type == "Delivery Note":
 				dn = frappe.get_doc("Delivery Note", sle_doc.voucher_no).as_dict()
 				for item in dn.get("items"):
 					if item.batch_no:
-						batch_doc = frappe.get_doc("Batch", item.batch_no)
 						sle_data = frappe.get_list("Stock Ledger Entry",
-							[["batch_no", "=", batch_doc.name]], ["name"])
+							[["batch_no", "=", item.batch_no]], ["name", "voucher_type", "voucher_no"])
 						sle_list = sle_list + sle_data
-						items_delivered = items_delivered + [{
-							"customer": dn.customer,
+						sle_expanded_list = sle_list + sle_data
+
+		# iterate to create product recall notice doc
+		for sle_item in sle_expanded_list:
+			if sle_item.voucher_type == "Stock Entry":
+				se = frappe.get_doc("Stock Entry", sle_item.voucher_no).as_dict()
+				for item in se.get("items"):
+					if (item.item_code and item.batch_no and item.parent) not in items_in_warehouse and item.batch_no:
+						items_in_warehouse = items_in_warehouse + [{
 							"item_code": item.item_code,
 							"item_name": item.item_name,
 							"batch_no": item.batch_no,
 							"package_tag": item.package_tag,
+							"warehouse": item.t_warehouse,
 							"qty": item.qty,
 							"reference_doctype": item.parenttype,
 							"reference_docname": item.parent
+						}]
+			if sle_item.voucher_type == "Delivery Note":
+				dn = frappe.get_doc("Delivery Note", sle_item.voucher_no).as_dict()
+				for item in dn.get("items"):
+					if (item.item_code and item.batch_no and item.parent) not in items_delivered and item.batch_no:
+						items_delivered = items_delivered + [{
+								"customer": dn.customer,
+								"item_code": item.item_code,
+								"item_name": item.item_name,
+								"batch_no": item.batch_no,
+								"package_tag": item.package_tag,
+								"qty": item.qty,
+								"reference_doctype": item.parenttype,
+								"reference_docname": item.parent
 						}]
 
 		# create list of dictionaries with unique value of item_code and batch_no
@@ -97,5 +107,6 @@ class ProductRecall(Document):
 			})
 			doc_recall_from_warehouse.save()
 			prn_doc_list.append(doc_recall_from_warehouse)
-		prn_doc_list = ["""<a href="#Form/Product Recall Notice/{0}">{1}</a>""".format(m.name) for m in prn_doc_list]
+
+		prn_doc_list = ["""<a href="#Form/Product Recall Notice/{0}">{1}</a>""".format(m.name, m.name) for m in prn_doc_list]
 		frappe.msgprint(_("{0} created").format(comma_and(prn_doc_list)))
