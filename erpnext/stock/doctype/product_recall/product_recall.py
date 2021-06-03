@@ -35,7 +35,6 @@ class ProductRecall(Document):
 					if item.batch_no:
 						sle_data = frappe.get_list("Stock Ledger Entry",
 							[["batch_no", "=", item.batch_no]], ["name", "voucher_type", "voucher_no"])
-						sle_list = sle_list + sle_data
 						sle_expanded_list = sle_list + sle_data
 
 			# append to sle_expanded_list for product recall notice to be created with recall from customer
@@ -45,7 +44,6 @@ class ProductRecall(Document):
 					if item.batch_no:
 						sle_data = frappe.get_list("Stock Ledger Entry",
 							[["batch_no", "=", item.batch_no]], ["name", "voucher_type", "voucher_no"])
-						sle_list = sle_list + sle_data
 						sle_expanded_list = sle_list + sle_data
 
 		# iterate to create product recall notice doc
