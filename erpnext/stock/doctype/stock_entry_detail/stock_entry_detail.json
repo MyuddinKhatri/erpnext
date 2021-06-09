@@ -57,6 +57,8 @@
   "col_break6",
   "material_request",
   "material_request_item",
+  "product_recall_notice",
+  "product_recall_notice_item",
   "original_item",
   "subcontracted_item",
   "reference_section",
@@ -519,11 +521,27 @@
    "label": "COA Batch",
    "options": "Batch",
    "read_only": 1
+  },
+  {
+   "fieldname": "product_recall_notice",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Product Recall Notice",
+   "options": "Product Recall Notice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "product_recall_notice_item",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Product Recall Notice Item",
+   "options": "Product Recall Notice Item",
+   "read_only": 1
   }
  ],
  "idx": 1,
  "istable": 1,
- "modified": "2021-01-14 04:34:36.907887",
+ "modified": "2021-06-08 21:21:24.527110",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
