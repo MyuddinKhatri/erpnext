@@ -26,6 +26,7 @@ def create_stock_entry_from_product_recall_notice(product_recall_notice):
 	se_items = []
 
 	for item in product_recall_notice.get("items"):
+		# only append items if it is not received ie items against which stock entry is not created
 		if item.get("qty") != item.get("received_qty"):
 			se_items.append({
 				"item_code":item.get("item_code"),
@@ -53,8 +54,8 @@ def create_stock_entry_from_product_recall_notice(product_recall_notice):
 		stock_entry_doc.submit()
 
 		for se_item in stock_entry_doc.get("items"):
-			if se_item.product_recall_notice_item:
-				frappe.db.set_value("Product Recall Notice Item", se_item.product_recall_notice_item, "received_qty", se_item.qty)
+			if se_item.get("product_recall_notice_item"):
+				frappe.db.set_value("Product Recall Notice Item", se_item.get("product_recall_notice_item"), "received_qty", se_item.get("qty"))
 
 	else:
 		frappe.throw(_("The Stock entry has been already created for this Product Recall Notice."))
